@@ -3,7 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DND.Middleware", "DND.Middleware\DND.Middleware.csproj", "{F494CECE-FCFC-4193-A911-7D4B8DE6EA0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DND.Storage", "DND.Storage\DND.Storage.csproj", "{75C0EEA8-CBCB-44EA-8A67-6E7DBA561F09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DND.Business", "DND.Business\DND.Business.csproj", "{408966FF-6B7F-41C7-AFBB-5A3AF0BEBDCD}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F494CECE-FCFC-4193-A911-7D4B8DE6EA0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F494CECE-FCFC-4193-A911-7D4B8DE6EA0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F494CECE-FCFC-4193-A911-7D4B8DE6EA0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F494CECE-FCFC-4193-A911-7D4B8DE6EA0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75C0EEA8-CBCB-44EA-8A67-6E7DBA561F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C0EEA8-CBCB-44EA-8A67-6E7DBA561F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C0EEA8-CBCB-44EA-8A67-6E7DBA561F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C0EEA8-CBCB-44EA-8A67-6E7DBA561F09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{408966FF-6B7F-41C7-AFBB-5A3AF0BEBDCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408966FF-6B7F-41C7-AFBB-5A3AF0BEBDCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408966FF-6B7F-41C7-AFBB-5A3AF0BEBDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408966FF-6B7F-41C7-AFBB-5A3AF0BEBDCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
