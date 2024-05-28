@@ -1,5 +1,6 @@
 ﻿using DND.Middleware.Base;
 using DND.Middleware.Constants;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DND.Middleware.Entity.Identity
 {
     [Table(nameof(User))]
+    [Index(nameof(Email), IsUnique = true)]
     public class User : AuditedEntity<long, long>
     {
         [Required]

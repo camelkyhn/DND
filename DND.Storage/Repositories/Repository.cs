@@ -15,8 +15,9 @@ namespace DND.Storage.Repositories
 {
     public class Repository<TContext, TKey, TUserKey, TAuditedEntity, TAuditedEntityDto, TFilterDto> : IRepository<TKey, TUserKey, TAuditedEntity, TAuditedEntityDto, TFilterDto>
         where TContext : DbContext
+        where TKey : struct, IEquatable<TKey>
         where TAuditedEntity : AuditedEntity<TKey, TUserKey>
-        where TAuditedEntityDto : AuditedEntityDto<TKey, TUserKey>
+        where TAuditedEntityDto : AuditedEntityDto<TKey?, TUserKey>
         where TFilterDto : FilterDto
     {
         protected readonly TContext Context;
@@ -135,7 +136,7 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TAuditedEntity> UpdateAsync(TAuditedEntityDto dto, CancellationToken cancellationToken = default)
         {
-            var oldEntity = await FindAsync(dto.Id, cancellationToken);
+            var oldEntity = await FindAsync(dto.Id.GetValueOrDefault(), cancellationToken);
             var creatorId = oldEntity.CreatorUserId;
             var creationTime = oldEntity.CreationTime;
             Context.Attach(oldEntity);
@@ -151,7 +152,7 @@ namespace DND.Storage.Repositories
 
         public virtual async Task DeleteAsync(TAuditedEntityDto dto, CancellationToken cancellationToken = default)
         {
-            var oldEntity = await FindAsync(dto.Id, cancellationToken);
+            var oldEntity = await FindAsync(dto.Id.GetValueOrDefault(), cancellationToken);
             var creatorId = oldEntity.CreatorUserId;
             var creationTime = oldEntity.CreationTime;
             var modifierId = oldEntity.ModifierUserId;

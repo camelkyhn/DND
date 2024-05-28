@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 namespace DND.Storage.IRepositories
 {
     public interface IRepository<in TKey, in TUserKey, TAuditedEntity, in TAuditedEntityDto, in TFilterDto>
+        where TKey : struct, IEquatable<TKey>
         where TAuditedEntity : AuditedEntity<TKey, TUserKey>
-        where TAuditedEntityDto : AuditedEntityDto<TKey, TUserKey>
+        where TAuditedEntityDto : AuditedEntityDto<TKey?, TUserKey>
         where TFilterDto : FilterDto
     {
         Task<TAuditedEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
