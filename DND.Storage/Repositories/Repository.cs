@@ -41,7 +41,7 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TAuditedEntity> GetAsSelectedAsync(TKey id, Expression<Func<TAuditedEntity, TAuditedEntity>> selectExpression, CancellationToken cancellationToken = default)
         {
-            var entity = await Context.Set<TAuditedEntity>().Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
+            var entity = await Context.Set<TAuditedEntity>().Where(e => !e.IsDeleted).Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
             if (entity == null)
             {
                 throw new NotFoundException(nameof(TAuditedEntity));
@@ -90,6 +90,10 @@ namespace DND.Storage.Repositories
             if (filter.IsDeleted != null)
             {
                 queryableSet = queryableSet.Where(entity => entity.IsDeleted == filter.IsDeleted);
+            }
+            else
+            {
+                queryableSet = queryableSet.Where(entity => !entity.IsDeleted);
             }
 
             if (!string.IsNullOrEmpty(filter.SortBy))
@@ -170,7 +174,7 @@ namespace DND.Storage.Repositories
 
         private async Task<TAuditedEntity> FindAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            var entity = await Context.Set<TAuditedEntity>().FindAsync(new object[] { id }, cancellationToken: cancellationToken);
+            var entity = await Context.Set<TAuditedEntity>().Where(e => !e.IsDeleted).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
             if (entity == null)
             {
                 throw new NotFoundException(nameof(TAuditedEntity));

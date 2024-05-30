@@ -22,11 +22,85 @@ namespace DND.Storage
             _mapper = mapper;
         }
 
-        public IPermissionRepository Permissions { get { return _permissionRepository ??= new PermissionRepository(_databaseContext, _mapper); } }
-        public IRoleRepository Roles { get { return _roleRepository ??= new RoleRepository(_databaseContext, _mapper); } }
-        public IRolePermissionRepository RolePermissions { get { return _rolePermissionRepository ??= new RolePermissionRepository(_databaseContext, _mapper); } }
-        public IUserRepository Users { get { return _userRepository ??= new UserRepository(_databaseContext, _mapper); } }
-        public IUserRoleRepository UserRoles { get { return _userRoleRepository ??= new UserRoleRepository(_databaseContext, _mapper); } }
+        public IPermissionRepository Permissions
+        {
+            get
+            {
+                if (_permissionRepository == null)
+                {
+                    _permissionRepository = new PermissionRepository(_databaseContext, _mapper);
+                    return _permissionRepository;
+                }
+                else
+                {
+                    return _permissionRepository;
+                }
+            }
+        }
+
+        public IRoleRepository Roles
+        {
+            get
+            {
+                if (_roleRepository == null)
+                {
+                    _roleRepository = new RoleRepository(_databaseContext, _mapper);
+                    return _roleRepository;
+                }
+                else
+                {
+                    return _roleRepository;
+                }
+            }
+        }
+
+        public IRolePermissionRepository RolePermissions
+        {
+            get
+            {
+                if (_rolePermissionRepository == null)
+                {
+                    _rolePermissionRepository = new RolePermissionRepository(_databaseContext, _mapper);
+                    return _rolePermissionRepository;
+                }
+                else
+                {
+                    return _rolePermissionRepository;
+                }
+            }
+        }
+
+        public IUserRepository Users
+        {
+            get
+            {
+                if (_userRepository == null)
+                {
+                    _userRepository = new UserRepository(_databaseContext, _mapper);
+                    return _userRepository;
+                }
+                else
+                {
+                    return _userRepository;
+                }
+            }
+        }
+
+        public IUserRoleRepository UserRoles
+        {
+            get
+            {
+                if (_userRoleRepository == null)
+                {
+                    _userRoleRepository = new UserRoleRepository(_databaseContext, _mapper);
+                    return _userRoleRepository;
+                }
+                else
+                {
+                    return _userRoleRepository;
+                }
+            }
+        }
 
         private bool _disposed;
 
