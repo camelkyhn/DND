@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DND.Storage.IRepositories.Identity
 {
-    public interface IUserRoleRepository : IRepository<int, long, UserRole, UserRoleDto, UserRoleFilterDto>
+    public interface IUserRoleRepository : IRepository<long, UserRole, UserRoleFilterDto>
     {
         bool IsExistingToAdd(UserRoleDto dto);
         bool IsExistingToUpdate(UserRoleDto dto);
-        Task<List<short>> GetUserRoleIdListAsync(long userId);
+        Task<List<short>> GetUserRoleIdListAsync(int userId);
     }
 }

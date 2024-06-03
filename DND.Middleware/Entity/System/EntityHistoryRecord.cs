@@ -1,8 +1,8 @@
-﻿using DND.Middleware.Base;
-using DND.Middleware.Constants;
+﻿using DND.Middleware.Constants;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using DND.Middleware.Base.Entity;
 
 namespace DND.Middleware.Entity.System
 {

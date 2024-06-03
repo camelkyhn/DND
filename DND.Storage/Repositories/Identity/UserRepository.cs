@@ -1,20 +1,19 @@
-﻿using DND.Middleware.Dto.Identity;
-using DND.Middleware.Exceptions;
+﻿using DND.Middleware.Exceptions;
 using DND.Storage.IRepositories.Identity;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using DND.Middleware.Filter.Identity;
 using DND.Middleware.Entity.Identity;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using DND.Middleware.Identity;
 
 namespace DND.Storage.Repositories.Identity
 {
-    public class UserRepository : Repository<DatabaseContext, long, long, User, UserDto, UserFilterDto>, IUserRepository
+    public class UserRepository : Repository<DatabaseContext, int, User, UserFilterDto>, IUserRepository
     {
-        public UserRepository(DatabaseContext context, IMapper mapper) : base(context, mapper)
+        public UserRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -50,18 +49,6 @@ namespace DND.Storage.Repositories.Identity
             return user;
         }
 
-        public override async Task<User> CreateAsync(UserDto dto, CancellationToken cancellationToken = default)
-        {
-            dto.SecurityStamp = Guid.NewGuid().ToString();
-            return await base.CreateAsync(dto, cancellationToken);
-        }
-
-        public override async Task<User> UpdateAsync(UserDto dto, CancellationToken cancellationToken = default)
-        {
-            dto.SecurityStamp = Guid.NewGuid().ToString();
-            return await base.UpdateAsync(dto, cancellationToken);
-        }
-
         public async Task IncreaseFailedAttemptsAsync(User user)
         {
             user.ModificationTime = DateTimeOffset.UtcNow;
@@ -93,7 +80,7 @@ namespace DND.Storage.Repositories.Identity
             return Context.Users.Any(u => u.Email.ToLower() == email.ToLower());
         }
 
-        public bool IsEmailTaken(string email, long userId)
+        public bool IsEmailTaken(string email, int userId)
         {
             return Context.Users.Any(u => u.Id != userId && u.Email.ToLower() == email.ToLower());
         }

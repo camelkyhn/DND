@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DND.Middleware.Base
+namespace DND.Middleware.Base.Filter
 {
     public class FilterDto
     {
@@ -30,12 +30,12 @@ namespace DND.Middleware.Base
 
         public DateTimeOffset? CreatedAfterDate { get; set; }
 
+        [StringLength(MaxLengths.LongText)]
+        public string CreatorUserEmail { get; set; }
+
         public DateTimeOffset? ModifiedBeforeDate { get; set; }
 
         public DateTimeOffset? ModifiedAfterDate { get; set; }
-
-        [StringLength(MaxLengths.LongText)]
-        public string CreatorUserEmail { get; set; }
 
         [StringLength(MaxLengths.LongText)]
         public string ModifierUserEmail { get; set; }

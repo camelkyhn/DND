@@ -1,4 +1,4 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Entity;
 using DND.Middleware.Entity.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,15 +14,15 @@ namespace DND.Middleware.System
 
         public static List<string> IgnoredProperties =>
         [
-            nameof(AuditedEntity<object, object>.CreationTime),
-            nameof(AuditedEntity<object, object>.CreatorUser),
-            nameof(AuditedEntity<object, object>.CreatorUserId),
-            nameof(AuditedEntity<object, object>.ModificationTime),
-            nameof(AuditedEntity<object, object>.ModifierUser),
-            nameof(AuditedEntity<object, object>.ModifierUserId),
-            nameof(AuditedEntity<object, object>.DeletionTime),
-            nameof(AuditedEntity<object, object>.DeletorUser),
-            nameof(AuditedEntity<object, object>.DeletorUserId),
+            nameof(FullAuditedEntity<object>.CreationTime),
+            nameof(FullAuditedEntity<object>.CreatorUser),
+            nameof(FullAuditedEntity<object>.CreatorUserId),
+            nameof(FullAuditedEntity<object>.ModificationTime),
+            nameof(FullAuditedEntity<object>.ModifierUser),
+            nameof(FullAuditedEntity<object>.ModifierUserId),
+            nameof(FullAuditedEntity<object>.DeletionTime),
+            nameof(FullAuditedEntity<object>.DeleterUser),
+            nameof(FullAuditedEntity<object>.DeleterUserId),
             nameof(User.PasswordHash),
             nameof(User.SecurityStamp)
         ];

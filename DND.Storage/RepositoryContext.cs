@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DND.Middleware.Identity;
 using DND.Storage.IRepositories.Identity;
 using DND.Storage.Repositories.Identity;
 using System;
@@ -7,8 +8,9 @@ namespace DND.Storage
 {
     public class RepositoryContext : IRepositoryContext
     {
-        private readonly IMapper _mapper;
         private readonly DatabaseContext _databaseContext;
+        private readonly IAppSession _session;
+        private readonly IMapper _mapper;
 
         private IPermissionRepository _permissionRepository;
         private IRoleRepository _roleRepository;
@@ -16,9 +18,10 @@ namespace DND.Storage
         private IUserRepository _userRepository;
         private IUserRoleRepository _userRoleRepository;
 
-        public RepositoryContext(DatabaseContext databaseContext, IMapper mapper)
+        public RepositoryContext(DatabaseContext databaseContext, IAppSession session, IMapper mapper)
         {
             _databaseContext = databaseContext;
+            _session = session;
             _mapper = mapper;
         }
 
@@ -28,7 +31,7 @@ namespace DND.Storage
             {
                 if (_permissionRepository == null)
                 {
-                    _permissionRepository = new PermissionRepository(_databaseContext, _mapper);
+                    _permissionRepository = new PermissionRepository(_databaseContext, _session, _mapper);
                     return _permissionRepository;
                 }
                 else
@@ -44,7 +47,7 @@ namespace DND.Storage
             {
                 if (_roleRepository == null)
                 {
-                    _roleRepository = new RoleRepository(_databaseContext, _mapper);
+                    _roleRepository = new RoleRepository(_databaseContext, _session, _mapper);
                     return _roleRepository;
                 }
                 else
@@ -60,7 +63,7 @@ namespace DND.Storage
             {
                 if (_rolePermissionRepository == null)
                 {
-                    _rolePermissionRepository = new RolePermissionRepository(_databaseContext, _mapper);
+                    _rolePermissionRepository = new RolePermissionRepository(_databaseContext, _session, _mapper);
                     return _rolePermissionRepository;
                 }
                 else
@@ -76,7 +79,7 @@ namespace DND.Storage
             {
                 if (_userRepository == null)
                 {
-                    _userRepository = new UserRepository(_databaseContext, _mapper);
+                    _userRepository = new UserRepository(_databaseContext, _session, _mapper);
                     return _userRepository;
                 }
                 else
@@ -92,7 +95,7 @@ namespace DND.Storage
             {
                 if (_userRoleRepository == null)
                 {
-                    _userRoleRepository = new UserRoleRepository(_databaseContext, _mapper);
+                    _userRoleRepository = new UserRoleRepository(_databaseContext, _session, _mapper);
                     return _userRoleRepository;
                 }
                 else

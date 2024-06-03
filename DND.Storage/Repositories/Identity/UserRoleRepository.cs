@@ -7,12 +7,13 @@ using DND.Middleware.Entity.Identity;
 using DND.Middleware.Filter.Identity;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using DND.Middleware.Identity;
 
 namespace DND.Storage.Repositories.Identity
 {
-    public class UserRoleRepository : Repository<DatabaseContext, int, long, UserRole, UserRoleDto, UserRoleFilterDto>, IUserRoleRepository
+    public class UserRoleRepository : Repository<DatabaseContext, long, UserRole, UserRoleFilterDto>, IUserRoleRepository
     {
-        public UserRoleRepository(DatabaseContext context, IMapper mapper) : base(context, mapper)
+        public UserRoleRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -47,7 +48,7 @@ namespace DND.Storage.Repositories.Identity
             return Context.UserRoles.Any(ur => ur.Id != dto.Id && ur.UserId == dto.UserId && ur.RoleId == dto.RoleId);
         }
 
-        public async Task<List<short>> GetUserRoleIdListAsync(long userId)
+        public async Task<List<short>> GetUserRoleIdListAsync(int userId)
         {
             return await Context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.RoleId).ToListAsync();
         }

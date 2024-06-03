@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using DND.Middleware.Dto.Identity;
 using DND.Middleware.Entity.Identity;
 using DND.Middleware.Filter.Identity;
+using DND.Middleware.Identity;
 using DND.Storage.IRepositories.Identity;
 using System.Linq;
 
 namespace DND.Storage.Repositories.Identity
 {
-    public class PermissionRepository : Repository<DatabaseContext, short, long, Permission, PermissionDto, PermissionFilterDto>, IPermissionRepository
+    public class PermissionRepository : Repository<DatabaseContext, short, Permission, PermissionFilterDto>, IPermissionRepository
     {
-        public PermissionRepository(DatabaseContext context, IMapper mapper) : base(context, mapper)
+        public PermissionRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -20,7 +20,7 @@ namespace DND.Storage.Repositories.Identity
                 queryableSet = queryableSet.Where(p => p.Name.ToLower().Contains(filter.Name.ToLower()));
             }
 
-            queryableSet = base.Filter(queryableSet, filter);
+            queryableSet = Filter(queryableSet, filter);
             return queryableSet;
         }
     }

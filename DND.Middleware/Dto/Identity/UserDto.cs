@@ -1,11 +1,11 @@
-﻿using DND.Middleware.Base;
-using DND.Middleware.Constants;
+﻿using DND.Middleware.Constants;
 using System.ComponentModel.DataAnnotations;
 using System;
+using DND.Middleware.Base.Dto;
 
 namespace DND.Middleware.Dto.Identity
 {
-    public class UserDto : AuditedEntityDto<long?, long>
+    public class UserDto : AuditedEntityDto<int?>
     {
         [Required]
         [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]

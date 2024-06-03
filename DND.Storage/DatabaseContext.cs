@@ -33,7 +33,7 @@ namespace DND.Storage
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_configuration.DbConnectionString);
+                optionsBuilder.UseNpgsql(_configuration.DbConnectionString);
             }
         }
 

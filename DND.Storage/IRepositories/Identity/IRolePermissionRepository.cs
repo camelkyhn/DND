@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DND.Storage.IRepositories.Identity
 {
-    public interface IRolePermissionRepository : IRepository<int, long, RolePermission, RolePermissionDto, RolePermissionFilterDto>
+    public interface IRolePermissionRepository : IRepository<int, RolePermission, RolePermissionFilterDto>
     {
         bool IsExistingToAdd(RolePermissionDto dto);
         bool IsExistingToUpdate(RolePermissionDto dto);

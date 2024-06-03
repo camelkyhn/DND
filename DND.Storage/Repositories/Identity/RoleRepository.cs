@@ -1,15 +1,15 @@
-﻿using DND.Middleware.Dto.Identity;
-using DND.Storage.IRepositories.Identity;
+﻿using DND.Storage.IRepositories.Identity;
 using System.Linq;
 using DND.Middleware.Filter.Identity;
 using DND.Middleware.Entity.Identity;
 using AutoMapper;
+using DND.Middleware.Identity;
 
 namespace DND.Storage.Repositories.Identity
 {
-    public class RoleRepository : Repository<DatabaseContext, short, long, Role, RoleDto, RoleFilterDto>, IRoleRepository
+    public class RoleRepository : Repository<DatabaseContext, short, Role, RoleFilterDto>, IRoleRepository
     {
-        public RoleRepository(DatabaseContext context, IMapper mapper) : base(context, mapper)
+        public RoleRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 

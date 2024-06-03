@@ -1,4 +1,4 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Entity;
 using DND.Middleware.Constants;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +10,7 @@ namespace DND.Middleware.Entity.Identity
 {
     [Table(nameof(User))]
     [Index(nameof(Email), IsUnique = true)]
-    public class User : AuditedEntity<long, long>
+    public class User : FullAuditedEntity<int>
     {
         [Required]
         [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]

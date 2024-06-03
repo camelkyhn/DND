@@ -1,10 +1,10 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Dto;
 
 namespace DND.Middleware.Dto.Identity
 {
-    public class UserRoleDto : AuditedEntityDto<int?, long>
+    public class UserRoleDto : AuditedEntityDto<long?>
     {
-        public long UserId { get; set; }
+        public int UserId { get; set; }
         public short RoleId { get; set; }
     }
 }

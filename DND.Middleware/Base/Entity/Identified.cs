@@ -1,13 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace DND.Middleware.Base
+namespace DND.Middleware.Base.Entity
 {
-    public interface IIdentified<TKey>
-    {
-        TKey Id { get; set; }
-    }
-
     public abstract class Identified<TKey> : IIdentified<TKey>
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]

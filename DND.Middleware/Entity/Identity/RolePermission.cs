@@ -1,15 +1,18 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Entity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DND.Middleware.Entity.Identity
 {
     [Table(nameof(RolePermission))]
-    public class RolePermission : AuditedEntity<int, long>
+    public class RolePermission : FullAuditedEntity<int>
     {
         public short RoleId { get; set; }
         public short PermissionId { get; set; }
 
+        [ForeignKey(nameof(RoleId))]
         public Role Role { get; set; }
+
+        [ForeignKey(nameof(PermissionId))]
         public Permission Permission { get; set; }
     }
 }

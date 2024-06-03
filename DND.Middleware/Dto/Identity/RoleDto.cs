@@ -1,10 +1,10 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Dto;
 using DND.Middleware.Constants;
 using System.ComponentModel.DataAnnotations;
 
 namespace DND.Middleware.Dto.Identity
 {
-    public class RoleDto : AuditedEntityDto<short?, long>
+    public class RoleDto : AuditedEntityDto<short?>
     {
         [Required]
         [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]

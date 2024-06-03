@@ -1,12 +1,12 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Entity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DND.Middleware.Entity.Identity
 {
     [Table(nameof(UserRole))]
-    public class UserRole : AuditedEntity<int, long>
+    public class UserRole : FullAuditedEntity<long>
     {
-        public long UserId { get; set; }
+        public int UserId { get; set; }
         public short RoleId { get; set; }
 
         public User User { get; set; }

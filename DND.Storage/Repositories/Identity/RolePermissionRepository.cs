@@ -2,19 +2,18 @@
 using DND.Middleware.Dto.Identity;
 using DND.Middleware.Entity.Identity;
 using DND.Middleware.Filter.Identity;
+using DND.Middleware.Identity;
 using DND.Storage.IRepositories.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DND.Storage.Repositories.Identity
 {
-    public class RolePermissionRepository : Repository<DatabaseContext, int, long, RolePermission, RolePermissionDto, RolePermissionFilterDto>, IRolePermissionRepository
+    public class RolePermissionRepository : Repository<DatabaseContext, int, RolePermission, RolePermissionFilterDto>, IRolePermissionRepository
     {
-        public RolePermissionRepository(DatabaseContext context, IMapper mapper) : base(context, mapper)
+        public RolePermissionRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 

@@ -1,4 +1,4 @@
-﻿using DND.Middleware.Base;
+﻿using DND.Middleware.Base.Entity;
 using DND.Middleware.Constants;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace DND.Middleware.Entity.Identity
 {
     [Table(nameof(Role))]
     [Index(nameof(Name), IsUnique = true)]
-    public class Role : AuditedEntity<short, long>
+    public class Role : FullAuditedEntity<short>
     {
         [Required]
         [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]
