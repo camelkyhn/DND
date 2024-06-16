@@ -1,6 +1,5 @@
 ﻿using DND.Middleware.Entity.Identity;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DND.Middleware.Base.Entity
 {
@@ -9,7 +8,6 @@ namespace DND.Middleware.Base.Entity
         public int CreatorUserId { get; set; }
         public DateTimeOffset CreationTime { get; set; }
 
-        [ForeignKey(nameof(CreatorUserId))]
         public User CreatorUser { get; set; }
     }
 }

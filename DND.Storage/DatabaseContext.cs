@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using DND.Storage.Extensions;
 
 namespace DND.Storage
 {
@@ -40,6 +41,8 @@ namespace DND.Storage
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.AddAuditedUserRelations();
         }
 
         public override int SaveChanges()
