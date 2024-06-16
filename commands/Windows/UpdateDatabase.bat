@@ -1,0 +1,1 @@
+dotnet ef database update --project DND.Storage --startup-project  DND.Web\DND.Web.Server
