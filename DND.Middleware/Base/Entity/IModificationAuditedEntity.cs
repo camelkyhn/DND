@@ -1,4 +1,4 @@
-﻿using DND.Middleware.Entity.Identity;
+﻿using DND.Middleware.Entities.Identity;
 using System;
 
 namespace DND.Middleware.Base.Entity
@@ -6,7 +6,7 @@ namespace DND.Middleware.Base.Entity
     public interface IModificationAuditedEntity
     {
         int? ModifierUserId { get; set; }
-        DateTimeOffset? ModificationTime { get; set; }
+        DateTime? ModificationTime { get; set; }
         User ModifierUser { get; set; }
     }
 }

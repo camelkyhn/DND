@@ -6,7 +6,7 @@
         {
             var type = instance.GetType();
             var propertyInfo = type.GetProperty(propertyName);
-            propertyInfo.SetValue(instance, propertyValue);
+            propertyInfo?.SetValue(instance, propertyValue);
             return instance;
         }
     }

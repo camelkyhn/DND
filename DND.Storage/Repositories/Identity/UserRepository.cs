@@ -3,8 +3,8 @@ using DND.Storage.IRepositories.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DND.Middleware.Filter.Identity;
-using DND.Middleware.Entity.Identity;
+using DND.Middleware.Entities.Identity;
+using DND.Middleware.FilterDtos.Identity;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using DND.Middleware.Identity;
@@ -51,13 +51,13 @@ namespace DND.Storage.Repositories.Identity
 
         public async Task IncreaseFailedAttemptsAsync(User user)
         {
-            user.ModificationTime = DateTimeOffset.UtcNow;
+            user.ModificationTime = DateTime.UtcNow;
             user.AccessFailedCount++;
             Context.Entry(user).Property(u => u.ModificationTime).IsModified = true;
             Context.Entry(user).Property(u => u.AccessFailedCount).IsModified = true;
             if (user.AccessFailedCount >= 5)
             {
-                user.LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(5 * (user.AccessFailedCount - 4));
+                user.LockoutEnd = DateTime.UtcNow.AddMinutes(5 * (user.AccessFailedCount - 4));
                 Context.Entry(user).Property(u => u.LockoutEnd).IsModified = true;
             }
 
@@ -66,7 +66,7 @@ namespace DND.Storage.Repositories.Identity
 
         public async Task ClearFailedAttemptsAsync(User user)
         {
-            user.ModificationTime = DateTimeOffset.UtcNow;
+            user.ModificationTime = DateTime.UtcNow;
             user.AccessFailedCount = 0;
             user.LockoutEnd = null;
             Context.Entry(user).Property(u => u.ModificationTime).IsModified = true;

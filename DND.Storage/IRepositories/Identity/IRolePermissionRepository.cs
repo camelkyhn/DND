@@ -1,8 +1,9 @@
-﻿using DND.Middleware.Dto.Identity;
-using DND.Middleware.Entity.Identity;
-using DND.Middleware.Filter.Identity;
+﻿using DND.Middleware.Dtos.Identity;
+using DND.Middleware.Entities.Identity;
+using DND.Middleware.FilterDtos.Identity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DND.Middleware.Dtos.Identity.RolePermissions;
 
 namespace DND.Storage.IRepositories.Identity
 {

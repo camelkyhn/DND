@@ -1,5 +1,5 @@
 ﻿using DND.Middleware.Base.Entity;
-using DND.Middleware.Entity.Identity;
+using DND.Middleware.Entities.Identity;
 using System;
 using System.Collections.Generic;
 

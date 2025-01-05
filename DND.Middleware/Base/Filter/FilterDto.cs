@@ -26,16 +26,16 @@ namespace DND.Middleware.Base.Filter
 
         public bool IsAllData { get; set; }
 
-        public DateTimeOffset? CreatedBeforeDate { get; set; }
+        public DateTime? CreatedBeforeDate { get; set; }
 
-        public DateTimeOffset? CreatedAfterDate { get; set; }
+        public DateTime? CreatedAfterDate { get; set; }
 
         [StringLength(MaxLengths.LongText)]
         public string CreatorUserEmail { get; set; }
 
-        public DateTimeOffset? ModifiedBeforeDate { get; set; }
+        public DateTime? ModifiedBeforeDate { get; set; }
 
-        public DateTimeOffset? ModifiedAfterDate { get; set; }
+        public DateTime? ModifiedAfterDate { get; set; }
 
         [StringLength(MaxLengths.LongText)]
         public string ModifierUserEmail { get; set; }

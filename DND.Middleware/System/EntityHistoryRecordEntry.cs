@@ -1,9 +1,9 @@
-﻿using DND.Middleware.Entity.System;
+﻿using DND.Middleware.Entities.System;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace DND.Middleware.System
 {
@@ -28,7 +28,7 @@ namespace DND.Middleware.System
                 EntityName = EntityName,
                 DateTime = DateTime.UtcNow,
                 EntityId = EntityId,
-                JsonValue = JsonConvert.SerializeObject(Values)
+                JsonValue = JsonSerializer.Serialize(Values)
             };
         }
     }

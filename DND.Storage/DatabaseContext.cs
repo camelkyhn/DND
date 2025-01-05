@@ -1,5 +1,5 @@
-﻿using DND.Middleware.Entity.Identity;
-using DND.Middleware.Entity.System;
+﻿using DND.Middleware.Entities.Identity;
+using DND.Middleware.Entities.System;
 using DND.Middleware.System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -8,12 +8,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using DND.Storage.Extensions;
+using DND.Middleware.System.Options;
 
 namespace DND.Storage
 {
     public class DatabaseContext : DbContext
     {
-        private readonly AppConfiguration _configuration;
+        private readonly ConnectionStringsOptions _connectionStringsOptions;
 
         public DbSet<EntityHistoryRecord> EntityHistoryRecords { get; set; }
 
@@ -25,16 +26,16 @@ namespace DND.Storage
 
         public bool IsHistoryDisabled { get; set; }
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> options, IOptions<AppConfiguration> configurationOptions) : base(options)
+        public DatabaseContext(DbContextOptions<DatabaseContext> options, IOptions<ConnectionStringsOptions> connectionStringsOptions) : base(options)
         {
-            _configuration = configurationOptions.Value;
+            _connectionStringsOptions = connectionStringsOptions.Value;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(_configuration.DbConnectionString);
+                optionsBuilder.UseNpgsql(_connectionStringsOptions.DatabaseConnection);
             }
         }
 
@@ -109,7 +110,7 @@ namespace DND.Storage
 
                     if (property.Metadata.IsPrimaryKey())
                     {
-                        entityHistoryRecordEntry.EntityId = property.CurrentValue.ToString();
+                        entityHistoryRecordEntry.EntityId = property.CurrentValue?.ToString();
                         continue;
                     }
 
@@ -119,13 +120,13 @@ namespace DND.Storage
             }
 
             // Save entity history record entities that have all the modifications
-            foreach (var historyRecordEntry in entityHistoryRecordEntries.Where(_ => !_.HasTemporaryProperties))
+            foreach (var historyRecordEntry in entityHistoryRecordEntries.Where(ehre => !ehre.HasTemporaryProperties))
             {
                 EntityHistoryRecords.Add(historyRecordEntry.ToEntityHistoryRecord());
             }
 
             // Keep a list of entries where the value of some properties are unknown at this step
-            return entityHistoryRecordEntries.Where(_ => _.HasTemporaryProperties).ToList();
+            return entityHistoryRecordEntries.Where(ehre => ehre.HasTemporaryProperties).ToList();
         }
 
         private Task OnAfterSaveChangesAsync(List<EntityHistoryRecordEntry> entityHistoryRecordEntries)
@@ -142,7 +143,7 @@ namespace DND.Storage
                 {
                     if (prop.Metadata.IsPrimaryKey())
                     {
-                        entityHistoryRecordEntry.EntityId = prop.CurrentValue.ToString();
+                        entityHistoryRecordEntry.EntityId = prop.CurrentValue?.ToString();
                     }
                     else
                     {

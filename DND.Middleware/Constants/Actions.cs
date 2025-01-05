@@ -8,7 +8,7 @@
         public const string Create = "Create";
         public const string Delete = "Delete";
         public const string Detail = "Detail";
-        public const string Edit = "Edit";
+        public const string Update = "Update";
         public const string List = "List";
         public const string Login = "Login";
         public const string Logout = "Logout";

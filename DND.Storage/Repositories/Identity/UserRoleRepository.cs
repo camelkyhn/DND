@@ -1,13 +1,14 @@
-﻿using DND.Middleware.Dto.Identity;
+﻿using DND.Middleware.Dtos.Identity;
+using DND.Middleware.Entities.Identity;
+using DND.Middleware.FilterDtos.Identity;
+using DND.Middleware.Identity;
 using DND.Storage.IRepositories.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DND.Middleware.Entity.Identity;
-using DND.Middleware.Filter.Identity;
 using AutoMapper;
+using DND.Middleware.Dtos.Identity.UserRoles;
 using Microsoft.EntityFrameworkCore;
-using DND.Middleware.Identity;
 
 namespace DND.Storage.Repositories.Identity
 {

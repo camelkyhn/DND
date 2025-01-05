@@ -1,5 +1,5 @@
-﻿using DND.Middleware.Entity.Identity;
-using DND.Middleware.Filter.Identity;
+﻿using DND.Middleware.Entities.Identity;
+using DND.Middleware.FilterDtos.Identity;
 
 namespace DND.Storage.IRepositories.Identity
 {

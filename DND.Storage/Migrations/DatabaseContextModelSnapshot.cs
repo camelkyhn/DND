@@ -17,12 +17,12 @@ namespace DND.Storage.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Permission", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Permission", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,22 +30,22 @@ namespace DND.Storage.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatorUserId")
+                    b.Property<int?>("CreatorUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("DeleterUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletionTime")
+                    b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ModifierUserId")
@@ -70,7 +70,7 @@ namespace DND.Storage.Migrations
                     b.ToTable("Permission");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Role", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Role", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,22 +78,22 @@ namespace DND.Storage.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<short>("Id"));
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatorUserId")
+                    b.Property<int?>("CreatorUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("DeleterUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletionTime")
+                    b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ModifierUserId")
@@ -118,7 +118,7 @@ namespace DND.Storage.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.RolePermission", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.RolePermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,22 +126,22 @@ namespace DND.Storage.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatorUserId")
+                    b.Property<int?>("CreatorUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("DeleterUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletionTime")
+                    b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ModifierUserId")
@@ -168,7 +168,7 @@ namespace DND.Storage.Migrations
                     b.ToTable("RolePermission");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.User", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,22 +179,27 @@ namespace DND.Storage.Migrations
                     b.Property<short>("AccessFailedCount")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatorUserId")
+                    b.Property<int?>("CreatorUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("DeleterUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletionTime")
+                    b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -217,27 +222,36 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsTwoFactorEnabled")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ModifierUserId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
                     b.Property<string>("SecurityStamp")
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -250,10 +264,16 @@ namespace DND.Storage.Migrations
 
                     b.HasIndex("ModifierUserId");
 
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.UserRole", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.UserRole", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,22 +281,22 @@ namespace DND.Storage.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatorUserId")
+                    b.Property<int?>("CreatorUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("DeleterUserId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletionTime")
+                    b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ModifierUserId")
@@ -303,7 +323,7 @@ namespace DND.Storage.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.System.EntityHistoryRecord", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.System.EntityHistoryRecord", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,7 +331,7 @@ namespace DND.Storage.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTimeOffset>("DateTime")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EntityId")
@@ -325,7 +345,6 @@ namespace DND.Storage.Migrations
                         .HasColumnType("character varying(64)");
 
                     b.Property<string>("JsonValue")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -333,19 +352,17 @@ namespace DND.Storage.Migrations
                     b.ToTable("EntityHistoryRecord");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Permission", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Permission", b =>
                 {
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "CreatorUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "CreatorUser")
                         .WithMany("CreatedPermissions")
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "DeleterUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "DeleterUser")
                         .WithMany("DeletedPermissions")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
                         .WithMany("ModifiedPermissions")
                         .HasForeignKey("ModifierUserId");
 
@@ -356,19 +373,17 @@ namespace DND.Storage.Migrations
                     b.Navigation("ModifierUser");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Role", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Role", b =>
                 {
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "CreatorUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "CreatorUser")
                         .WithMany("CreatedRoles")
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "DeleterUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "DeleterUser")
                         .WithMany("DeletedRoles")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
                         .WithMany("ModifiedRoles")
                         .HasForeignKey("ModifierUserId");
 
@@ -379,29 +394,27 @@ namespace DND.Storage.Migrations
                     b.Navigation("ModifierUser");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.RolePermission", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.RolePermission", b =>
                 {
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "CreatorUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "CreatorUser")
                         .WithMany("CreatedRolePermissions")
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "DeleterUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "DeleterUser")
                         .WithMany("DeletedRolePermissions")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
                         .WithMany("ModifiedRolePermissions")
                         .HasForeignKey("ModifierUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.Permission", "Permission")
+                    b.HasOne("DND.Middleware.Entities.Identity.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DND.Middleware.Entity.Identity.Role", "Role")
+                    b.HasOne("DND.Middleware.Entities.Identity.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -418,19 +431,17 @@ namespace DND.Storage.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.User", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.User", b =>
                 {
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "CreatorUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "CreatorUser")
                         .WithMany("CreatedUsers")
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "DeleterUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "DeleterUser")
                         .WithMany("DeletedUsers")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
                         .WithMany("ModifiedUsers")
                         .HasForeignKey("ModifierUserId");
 
@@ -441,29 +452,27 @@ namespace DND.Storage.Migrations
                     b.Navigation("ModifierUser");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.UserRole", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.UserRole", b =>
                 {
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "CreatorUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "CreatorUser")
                         .WithMany("CreatedUserRoles")
-                        .HasForeignKey("CreatorUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatorUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "DeleterUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "DeleterUser")
                         .WithMany("DeletedUserRoles")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
                         .WithMany("ModifiedUserRoles")
                         .HasForeignKey("ModifierUserId");
 
-                    b.HasOne("DND.Middleware.Entity.Identity.Role", "Role")
+                    b.HasOne("DND.Middleware.Entities.Identity.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DND.Middleware.Entity.Identity.User", "User")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -480,19 +489,19 @@ namespace DND.Storage.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Permission", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.Role", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.Role", b =>
                 {
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("DND.Middleware.Entity.Identity.User", b =>
+            modelBuilder.Entity("DND.Middleware.Entities.Identity.User", b =>
                 {
                     b.Navigation("CreatedPermissions");
 

@@ -1,4 +1,4 @@
-﻿using DND.Middleware.Entity.Identity;
+﻿using DND.Middleware.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DND.Storage.Extensions
@@ -14,27 +14,27 @@ namespace DND.Storage.Extensions
                 user.HasMany(u => u.CreatedPermissions)
                     .WithOne(x => x.CreatorUser)
                     .HasForeignKey(x => x.CreatorUserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 user.HasMany(u => u.CreatedRolePermissions)
                     .WithOne(x => x.CreatorUser)
                     .HasForeignKey(x => x.CreatorUserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 user.HasMany(u => u.CreatedRoles)
                     .WithOne(x => x.CreatorUser)
                     .HasForeignKey(x => x.CreatorUserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 user.HasMany(u => u.CreatedUserRoles)
                     .WithOne(x => x.CreatorUser)
                     .HasForeignKey(x => x.CreatorUserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 user.HasMany(u => u.CreatedUsers)
                     .WithOne(x => x.CreatorUser)
                     .HasForeignKey(x => x.CreatorUserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 #endregion
 
