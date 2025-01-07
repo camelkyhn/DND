@@ -41,28 +41,28 @@ namespace DND.Storage.Extensions
                 #region Modified User
 
                 user.HasMany(u => u.ModifiedPermissions)
-                    .WithOne(x => x.ModifierUser)
-                    .HasForeignKey(x => x.ModifierUserId)
+                    .WithOne(x => x.LastModifierUser)
+                    .HasForeignKey(x => x.LastModifierUserId)
                     .IsRequired(false);
 
                 user.HasMany(u => u.ModifiedRolePermissions)
-                    .WithOne(x => x.ModifierUser)
-                    .HasForeignKey(x => x.ModifierUserId)
+                    .WithOne(x => x.LastModifierUser)
+                    .HasForeignKey(x => x.LastModifierUserId)
                     .IsRequired(false);
 
                 user.HasMany(u => u.ModifiedRoles)
-                    .WithOne(x => x.ModifierUser)
-                    .HasForeignKey(x => x.ModifierUserId)
+                    .WithOne(x => x.LastModifierUser)
+                    .HasForeignKey(x => x.LastModifierUserId)
                     .IsRequired(false);
 
                 user.HasMany(u => u.ModifiedUserRoles)
-                    .WithOne(x => x.ModifierUser)
-                    .HasForeignKey(x => x.ModifierUserId)
+                    .WithOne(x => x.LastModifierUser)
+                    .HasForeignKey(x => x.LastModifierUserId)
                     .IsRequired(false);
 
                 user.HasMany(u => u.ModifiedUsers)
-                    .WithOne(x => x.ModifierUser)
-                    .HasForeignKey(x => x.ModifierUserId)
+                    .WithOne(x => x.LastModifierUser)
+                    .HasForeignKey(x => x.LastModifierUserId)
                     .IsRequired(false);
 
                 #endregion

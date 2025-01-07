@@ -52,8 +52,8 @@ namespace DND.Storage.Migrations
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifierUserId = table.Column<int>(type: "integer", nullable: true),
-                    ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifierUserId = table.Column<int>(type: "integer", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleterUserId = table.Column<int>(type: "integer", nullable: true),
                     DeletionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -71,8 +71,8 @@ namespace DND.Storage.Migrations
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_User_User_ModifierUserId",
-                        column: x => x.ModifierUserId,
+                        name: "FK_User_User_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
                         principalTable: "User",
                         principalColumn: "Id");
                 });
@@ -87,8 +87,8 @@ namespace DND.Storage.Migrations
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifierUserId = table.Column<int>(type: "integer", nullable: true),
-                    ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifierUserId = table.Column<int>(type: "integer", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleterUserId = table.Column<int>(type: "integer", nullable: true),
                     DeletionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -106,8 +106,8 @@ namespace DND.Storage.Migrations
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Permission_User_ModifierUserId",
-                        column: x => x.ModifierUserId,
+                        name: "FK_Permission_User_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
                         principalTable: "User",
                         principalColumn: "Id");
                 });
@@ -122,8 +122,8 @@ namespace DND.Storage.Migrations
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifierUserId = table.Column<int>(type: "integer", nullable: true),
-                    ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifierUserId = table.Column<int>(type: "integer", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleterUserId = table.Column<int>(type: "integer", nullable: true),
                     DeletionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -141,8 +141,8 @@ namespace DND.Storage.Migrations
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Role_User_ModifierUserId",
-                        column: x => x.ModifierUserId,
+                        name: "FK_Role_User_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
                         principalTable: "User",
                         principalColumn: "Id");
                 });
@@ -158,8 +158,8 @@ namespace DND.Storage.Migrations
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifierUserId = table.Column<int>(type: "integer", nullable: true),
-                    ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifierUserId = table.Column<int>(type: "integer", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleterUserId = table.Column<int>(type: "integer", nullable: true),
                     DeletionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -189,8 +189,8 @@ namespace DND.Storage.Migrations
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_RolePermission_User_ModifierUserId",
-                        column: x => x.ModifierUserId,
+                        name: "FK_RolePermission_User_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
                         principalTable: "User",
                         principalColumn: "Id");
                 });
@@ -206,8 +206,8 @@ namespace DND.Storage.Migrations
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifierUserId = table.Column<int>(type: "integer", nullable: true),
-                    ModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifierUserId = table.Column<int>(type: "integer", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleterUserId = table.Column<int>(type: "integer", nullable: true),
                     DeletionTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -231,8 +231,8 @@ namespace DND.Storage.Migrations
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_UserRole_User_ModifierUserId",
-                        column: x => x.ModifierUserId,
+                        name: "FK_UserRole_User_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
                         principalTable: "User",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -254,9 +254,9 @@ namespace DND.Storage.Migrations
                 column: "DeleterUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permission_ModifierUserId",
+                name: "IX_Permission_LastModifierUserId",
                 table: "Permission",
-                column: "ModifierUserId");
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permission_Name",
@@ -275,9 +275,9 @@ namespace DND.Storage.Migrations
                 column: "DeleterUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Role_ModifierUserId",
+                name: "IX_Role_LastModifierUserId",
                 table: "Role",
-                column: "ModifierUserId");
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Role_Name",
@@ -296,9 +296,9 @@ namespace DND.Storage.Migrations
                 column: "DeleterUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RolePermission_ModifierUserId",
+                name: "IX_RolePermission_LastModifierUserId",
                 table: "RolePermission",
-                column: "ModifierUserId");
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermission_PermissionId",
@@ -327,9 +327,9 @@ namespace DND.Storage.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_ModifierUserId",
+                name: "IX_User_LastModifierUserId",
                 table: "User",
-                column: "ModifierUserId");
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_PhoneNumber",
@@ -354,9 +354,9 @@ namespace DND.Storage.Migrations
                 column: "DeleterUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserRole_ModifierUserId",
+                name: "IX_UserRole_LastModifierUserId",
                 table: "UserRole",
-                column: "ModifierUserId");
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRole_RoleId",

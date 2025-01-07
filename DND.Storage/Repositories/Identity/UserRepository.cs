@@ -51,9 +51,9 @@ namespace DND.Storage.Repositories.Identity
 
         public async Task IncreaseFailedAttemptsAsync(User user)
         {
-            user.ModificationTime = DateTime.UtcNow;
+            user.LastModificationTime = DateTime.UtcNow;
             user.AccessFailedCount++;
-            Context.Entry(user).Property(u => u.ModificationTime).IsModified = true;
+            Context.Entry(user).Property(u => u.LastModificationTime).IsModified = true;
             Context.Entry(user).Property(u => u.AccessFailedCount).IsModified = true;
             if (user.AccessFailedCount >= 5)
             {
@@ -66,10 +66,10 @@ namespace DND.Storage.Repositories.Identity
 
         public async Task ClearFailedAttemptsAsync(User user)
         {
-            user.ModificationTime = DateTime.UtcNow;
+            user.LastModificationTime = DateTime.UtcNow;
             user.AccessFailedCount = 0;
             user.LockoutEnd = null;
-            Context.Entry(user).Property(u => u.ModificationTime).IsModified = true;
+            Context.Entry(user).Property(u => u.LastModificationTime).IsModified = true;
             Context.Entry(user).Property(u => u.AccessFailedCount).IsModified = true;
             Context.Entry(user).Property(u => u.LockoutEnd).IsModified = true;
             await Context.SaveChangesAsync();

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
+﻿using System;
 
 namespace DND.Middleware.System
 {
@@ -9,7 +8,7 @@ namespace DND.Middleware.System
         public string ErrorMessage { get; set; }
         public string ExceptionType { get; set; }
         public string ExceptionMessage { get; set; }
-        public ModelStateDictionary ModelState { get; set; }
+        public InputModelStateDictionary InputModelStateDictionary { get; set; }
 
         public Result Error(string errorMessage)
         {
@@ -26,10 +25,10 @@ namespace DND.Middleware.System
             return this;
         }
 
-        public Result Error(ModelStateDictionary modelState)
+        public Result Error(InputModelStateDictionary inputModelStateDictionary)
         {
             IsSucceeded = false;
-            ModelState = modelState;
+            InputModelStateDictionary = inputModelStateDictionary;
             return this;
         }
     }

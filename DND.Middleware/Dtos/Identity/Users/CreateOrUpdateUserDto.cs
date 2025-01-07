@@ -26,15 +26,13 @@ public class CreateOrUpdateUserDto : EntityDto<int?>
     [StringLength(MaxLengths.TinyText)]
     public string PhoneNumber { get; set; }
 
-    [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]
-    public string PasswordHash { get; set; }
+    [Required]
+    [StringLength(MaxLengths.PasswordText, MinimumLength = MinLengths.PasswordText)]
+    public string Password { get; set; }
 
     public bool IsEmailEnabled { get; set; }
 
     public bool IsSmsEnabled { get; set; }
-
-    [StringLength(MaxLengths.GuidText, MinimumLength = MinLengths.GuidText)]
-    public string SecurityStamp { get; set; }
 
     public bool IsEmailConfirmed { get; set; }
 

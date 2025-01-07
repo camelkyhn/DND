@@ -5,9 +5,9 @@ namespace DND.Middleware.Base.Entity
 {
     public class AuditedEntity<TKey> : CreationAuditedEntity<TKey>, IAuditedEntity
     {
-        public int? ModifierUserId { get; set; }
-        public DateTime? ModificationTime { get; set; }
+        public int? LastModifierUserId { get; set; }
+        public DateTime? LastModificationTime { get; set; }
 
-        public User ModifierUser { get; set; }
+        public User LastModifierUser { get; set; }
     }
 }

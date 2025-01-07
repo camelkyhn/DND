@@ -45,10 +45,10 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("ModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ModifierUserId")
+                    b.Property<int?>("LastModifierUserId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -62,7 +62,7 @@ namespace DND.Storage.Migrations
 
                     b.HasIndex("DeleterUserId");
 
-                    b.HasIndex("ModifierUserId");
+                    b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -93,10 +93,10 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("ModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ModifierUserId")
+                    b.Property<int?>("LastModifierUserId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -110,7 +110,7 @@ namespace DND.Storage.Migrations
 
                     b.HasIndex("DeleterUserId");
 
-                    b.HasIndex("ModifierUserId");
+                    b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -141,10 +141,10 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("ModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ModifierUserId")
+                    b.Property<int?>("LastModifierUserId")
                         .HasColumnType("integer");
 
                     b.Property<short>("PermissionId")
@@ -159,7 +159,7 @@ namespace DND.Storage.Migrations
 
                     b.HasIndex("DeleterUserId");
 
-                    b.HasIndex("ModifierUserId");
+                    b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("PermissionId");
 
@@ -222,6 +222,12 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsTwoFactorEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("LastModifierUserId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -229,12 +235,6 @@ namespace DND.Storage.Migrations
 
                     b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ModificationTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("ModifierUserId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(256)
@@ -262,7 +262,7 @@ namespace DND.Storage.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("ModifierUserId");
+                    b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
@@ -296,10 +296,10 @@ namespace DND.Storage.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("ModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ModifierUserId")
+                    b.Property<int?>("LastModifierUserId")
                         .HasColumnType("integer");
 
                     b.Property<short>("RoleId")
@@ -314,7 +314,7 @@ namespace DND.Storage.Migrations
 
                     b.HasIndex("DeleterUserId");
 
-                    b.HasIndex("ModifierUserId");
+                    b.HasIndex("LastModifierUserId");
 
                     b.HasIndex("RoleId");
 
@@ -362,15 +362,15 @@ namespace DND.Storage.Migrations
                         .WithMany("DeletedPermissions")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "LastModifierUser")
                         .WithMany("ModifiedPermissions")
-                        .HasForeignKey("ModifierUserId");
+                        .HasForeignKey("LastModifierUserId");
 
                     b.Navigation("CreatorUser");
 
                     b.Navigation("DeleterUser");
 
-                    b.Navigation("ModifierUser");
+                    b.Navigation("LastModifierUser");
                 });
 
             modelBuilder.Entity("DND.Middleware.Entities.Identity.Role", b =>
@@ -383,15 +383,15 @@ namespace DND.Storage.Migrations
                         .WithMany("DeletedRoles")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "LastModifierUser")
                         .WithMany("ModifiedRoles")
-                        .HasForeignKey("ModifierUserId");
+                        .HasForeignKey("LastModifierUserId");
 
                     b.Navigation("CreatorUser");
 
                     b.Navigation("DeleterUser");
 
-                    b.Navigation("ModifierUser");
+                    b.Navigation("LastModifierUser");
                 });
 
             modelBuilder.Entity("DND.Middleware.Entities.Identity.RolePermission", b =>
@@ -404,9 +404,9 @@ namespace DND.Storage.Migrations
                         .WithMany("DeletedRolePermissions")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "LastModifierUser")
                         .WithMany("ModifiedRolePermissions")
-                        .HasForeignKey("ModifierUserId");
+                        .HasForeignKey("LastModifierUserId");
 
                     b.HasOne("DND.Middleware.Entities.Identity.Permission", "Permission")
                         .WithMany("RolePermissions")
@@ -424,7 +424,7 @@ namespace DND.Storage.Migrations
 
                     b.Navigation("DeleterUser");
 
-                    b.Navigation("ModifierUser");
+                    b.Navigation("LastModifierUser");
 
                     b.Navigation("Permission");
 
@@ -441,15 +441,15 @@ namespace DND.Storage.Migrations
                         .WithMany("DeletedUsers")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "LastModifierUser")
                         .WithMany("ModifiedUsers")
-                        .HasForeignKey("ModifierUserId");
+                        .HasForeignKey("LastModifierUserId");
 
                     b.Navigation("CreatorUser");
 
                     b.Navigation("DeleterUser");
 
-                    b.Navigation("ModifierUser");
+                    b.Navigation("LastModifierUser");
                 });
 
             modelBuilder.Entity("DND.Middleware.Entities.Identity.UserRole", b =>
@@ -462,9 +462,9 @@ namespace DND.Storage.Migrations
                         .WithMany("DeletedUserRoles")
                         .HasForeignKey("DeleterUserId");
 
-                    b.HasOne("DND.Middleware.Entities.Identity.User", "ModifierUser")
+                    b.HasOne("DND.Middleware.Entities.Identity.User", "LastModifierUser")
                         .WithMany("ModifiedUserRoles")
-                        .HasForeignKey("ModifierUserId");
+                        .HasForeignKey("LastModifierUserId");
 
                     b.HasOne("DND.Middleware.Entities.Identity.Role", "Role")
                         .WithMany("UserRoles")
@@ -482,7 +482,7 @@ namespace DND.Storage.Migrations
 
                     b.Navigation("DeleterUser");
 
-                    b.Navigation("ModifierUser");
+                    b.Navigation("LastModifierUser");
 
                     b.Navigation("Role");
 

@@ -15,13 +15,9 @@ namespace DND.Middleware.Dtos.Identity.Users
 
         public string PhoneNumber { get; set; }
 
-        public string PasswordHash { get; set; }
-
         public bool IsEmailEnabled { get; set; }
 
         public bool IsSmsEnabled { get; set; }
-
-        public string SecurityStamp { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
 

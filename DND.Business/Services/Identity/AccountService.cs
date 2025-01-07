@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.Extensions.Options;
 using DND.Middleware.System;
-using DND.Business.IServices.Identity;
 using DND.Middleware.ResultDtos.Identity;
 using DND.Middleware.Constants;
 using DND.Middleware.Entities.Identity;
@@ -14,16 +13,23 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Collections.Generic;
+using AutoMapper;
 using DND.Middleware.Dtos.Identity.Accounts;
+using DND.Middleware.Identity;
 using DND.Middleware.System.Options;
 
 namespace DND.Business.Services.Identity
 {
+    public interface IAccountService
+    {
+        Task<Result<LoginResultDto>> LoginAsync(LoginDto dto);
+    }
+
     public class AccountService : Service, IAccountService
     {
         private readonly AuthorizationOptions _authorizationOptions;
 
-        public AccountService(IRepositoryContext repositoryContext, IOptions<AuthorizationOptions> options) : base(repositoryContext)
+        public AccountService(IMapper mapper, IAppSession appSession, IRepositoryContext repositoryContext, IOptions<AuthorizationOptions> options) : base(mapper, appSession, repositoryContext)
         {
             _authorizationOptions = options.Value;
         }
@@ -33,7 +39,7 @@ namespace DND.Business.Services.Identity
             var result = new Result<LoginResultDto>();
             try
             {
-                var userResult = await _repositoryContext.Users.GetByEmailAsync(dto.Email);
+                var userResult = await RepositoryContext.Users.GetByEmailAsync(dto.Email);
                 if (!userResult.IsEmailConfirmed)
                 {
                     return new Result<LoginResultDto> { ErrorMessage = Errors.LoginConfirmEmail };
@@ -53,8 +59,8 @@ namespace DND.Business.Services.Identity
                     {
                         Subject = new ClaimsIdentity(new List<Claim>
                         {
-                            new Claim(Claims.Id, userResult.Id.ToString()),
-                            new Claim(Claims.Email, userResult.Email)
+                            new(Claims.Id, userResult.Id.ToString()),
+                            new(Claims.Email, userResult.Email)
                         }),
                         Expires = DateTime.UtcNow.AddDays(1),
                         Issuer = _authorizationOptions.Jwt.Issuer,
@@ -66,14 +72,14 @@ namespace DND.Business.Services.Identity
                     result.Success(new LoginResultDto { AccessToken = tokenHandler.WriteToken(token) });
                     if (userResult.LockoutEnd != null || userResult.AccessFailedCount > 0)
                     {
-                        await _repositoryContext.Users.ClearFailedAttemptsAsync(userResult);
+                        await RepositoryContext.Users.ClearFailedAttemptsAsync(userResult);
                     }
                 }
                 else
                 {
                     if (userResult.IsLockoutEnabled)
                     {
-                        await _repositoryContext.Users.IncreaseFailedAttemptsAsync(userResult);
+                        await RepositoryContext.Users.IncreaseFailedAttemptsAsync(userResult);
                         if (userResult.LockoutEnd != null)
                         {
                             return new Result<LoginResultDto> { ErrorMessage = $"{Errors.AccountLockedOut}{userResult.LockoutEnd:yyyy-MM-dd HH:mm:ss}" };

@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using DND.Business.Services.Identity;
 
 namespace DND.Web.Server
 {
@@ -31,6 +31,7 @@ namespace DND.Web.Server
             builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.Smtp));
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpContextAccessor();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -55,8 +56,7 @@ namespace DND.Web.Server
                 };
             });
 
-            builder.Services.AddDbContext<DatabaseContext>(db => db.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection"))
-                .ConfigureWarnings(wcb => wcb.Ignore(RelationalEventId.PendingModelChangesWarning))); // TODO: Remove this after ef core turns into normal
+            builder.Services.AddDbContext<DatabaseContext>(db => db.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection")));
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 
@@ -78,6 +78,7 @@ namespace DND.Web.Server
                 var session = options.GetRequiredService<IAppSession>();
                 return new RepositoryContext(dbContext, mapper, session);
             });
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

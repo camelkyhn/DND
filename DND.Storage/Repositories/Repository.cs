@@ -37,12 +37,12 @@ namespace DND.Storage.Repositories
 
         public IQueryable<TEntity> GetTableAsQueryable()
         {
-            return Table.AsQueryable();
+            return Table.Where(x => !x.IsDeleted);
         }
 
         public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await Table.FirstOrDefaultAsync(expression, cancellationToken);
+            return await Table.Where(x => !x.IsDeleted).FirstOrDefaultAsync(expression, cancellationToken);
         }
 
         public virtual async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default)
@@ -55,7 +55,7 @@ namespace DND.Storage.Repositories
             var entity = await Table.Where(e => !e.IsDeleted).Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
             if (entity == null)
             {
-                throw new NotFoundException(nameof(TEntity));
+                throw new NotFoundException(typeof(TEntity).Name);
             }
 
             return entity;
@@ -66,7 +66,7 @@ namespace DND.Storage.Repositories
             var entityResult = await Table.Where(e => !e.IsDeleted && e.Id.Equals(id)).Select(selectExpression).FirstOrDefaultAsync(cancellationToken);
             if (entityResult == null)
             {
-                throw new NotFoundException(nameof(TEntity));
+                throw new NotFoundException(typeof(TEntity).Name);
             }
 
             return entityResult;
@@ -86,6 +86,19 @@ namespace DND.Storage.Repositories
             return entity;
         }
 
+        public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            if (typeof(TEntity).IsAssignableFrom(typeof(ICreationAuditedEntity)))
+            {
+                entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreationTime), DateTime.UtcNow);
+                entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreatorUserId), Session.UserId);
+            }
+
+            await Context.AddAsync(entity, cancellationToken);
+            await Context.SaveChangesAsync(cancellationToken);
+            return entity;
+        }
+
         public virtual async Task<TEntity> UpdateAsync<TEntityDto>(TEntityDto dto, CancellationToken cancellationToken = default) where TEntityDto : class, IEntityDto<TKey?>
         {
             var oldEntity = await FindAsync(dto.Id.GetValueOrDefault(), cancellationToken);
@@ -93,8 +106,23 @@ namespace DND.Storage.Repositories
             oldEntity = Mapper.Map(dto, oldEntity);
             if (typeof(TEntity).IsAssignableFrom(typeof(IModificationAuditedEntity)))
             {
-                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.ModificationTime), DateTime.UtcNow);
-                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.ModifierUserId), Session.UserId);
+                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModificationTime), DateTime.UtcNow);
+                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModifierUserId), Session.UserId);
+            }
+
+            await Context.SaveChangesAsync(cancellationToken);
+            return oldEntity;
+        }
+
+        public virtual async Task<TEntity> UpdateAsync(TEntity updatedEntity, CancellationToken cancellationToken = default)
+        {
+            var oldEntity = await FindAsync(updatedEntity.Id, cancellationToken);
+            AttachIfNot(oldEntity);
+            oldEntity = Mapper.Map(updatedEntity, oldEntity);
+            if (typeof(TEntity).IsAssignableFrom(typeof(IModificationAuditedEntity)))
+            {
+                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModificationTime), DateTime.UtcNow);
+                oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModifierUserId), Session.UserId);
             }
 
             await Context.SaveChangesAsync(cancellationToken);
@@ -140,7 +168,7 @@ namespace DND.Storage.Repositories
             var entity = await Table.Where(e => !e.IsDeleted).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
             if (entity == null)
             {
-                throw new NotFoundException(nameof(TEntity));
+                throw new NotFoundException(typeof(TEntity).Name);
             }
 
             return entity;
@@ -176,6 +204,11 @@ namespace DND.Storage.Repositories
             return await Filter(Table.Select(selectExpression), filter).ToListAsync(cancellationToken);
         }
 
+        public virtual async Task<List<TResult>> GetListAsSelectedAsync<TResult>(TFilterDto filter, Expression<Func<TEntity, TResult>> selectExpression, CancellationToken cancellationToken = default)
+        {
+            return await Filter(Table, filter).Select(selectExpression).ToListAsync(cancellationToken);
+        }
+
         public virtual IQueryable<TEntity> Filter(IQueryable<TEntity> queryableSet, TFilterDto filter)
         {
             if (typeof(TEntity).IsAssignableFrom(typeof(ICreationAuditedEntity)))
@@ -200,17 +233,17 @@ namespace DND.Storage.Repositories
             {
                 if (filter.ModifiedBeforeDate != null && filter.ModifiedBeforeDate != DateTime.MinValue)
                 {
-                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).ModificationTime.Value.Date < filter.ModifiedBeforeDate.Value.Date);
+                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).LastModificationTime.Value.Date < filter.ModifiedBeforeDate.Value.Date);
                 }
 
                 if (filter.ModifiedAfterDate != null && filter.ModifiedAfterDate != DateTime.MinValue)
                 {
-                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).ModificationTime.Value.Date > filter.ModifiedAfterDate.Value.Date);
+                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).LastModificationTime.Value.Date > filter.ModifiedAfterDate.Value.Date);
                 }
 
                 if (!string.IsNullOrEmpty(filter.ModifierUserEmail))
                 {
-                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).ModifierUser.Email.ToLower().Contains(filter.ModifierUserEmail.ToLower()));
+                    queryableSet = queryableSet.Where(entity => ((IModificationAuditedEntity)entity).LastModifierUser.Email.ToLower().Contains(filter.ModifierUserEmail.ToLower()));
                 }
             }
 
