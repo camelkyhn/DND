@@ -1,30 +1,40 @@
 ﻿using DND.Middleware.Base.Entity;
 using DND.Middleware.Entities.Identity;
-using System;
 using System.Collections.Generic;
 
 namespace DND.Middleware.System
 {
     public static class EntityConfiguration
     {
-        public static List<Type> TrackableList =>
+        private static List<string> FullAuditedEntityIgnoredProperties =>
         [
-            typeof(User)
+            nameof(IFullAuditedEntity.CreationTime),
+            nameof(IFullAuditedEntity.CreatorUser),
+            nameof(IFullAuditedEntity.CreatorUserId),
+            nameof(IFullAuditedEntity.LastModificationTime),
+            nameof(IFullAuditedEntity.LastModifierUser),
+            nameof(IFullAuditedEntity.LastModifierUserId),
+            nameof(IFullAuditedEntity.DeletionTime),
+            nameof(IFullAuditedEntity.DeleterUser),
+            nameof(IFullAuditedEntity.DeleterUserId)
         ];
 
-        public static List<string> IgnoredProperties =>
-        [
-            nameof(FullAuditedEntity<object>.CreationTime),
-            nameof(FullAuditedEntity<object>.CreatorUser),
-            nameof(FullAuditedEntity<object>.CreatorUserId),
-            nameof(FullAuditedEntity<object>.LastModificationTime),
-            nameof(FullAuditedEntity<object>.LastModifierUser),
-            nameof(FullAuditedEntity<object>.LastModifierUserId),
-            nameof(FullAuditedEntity<object>.DeletionTime),
-            nameof(FullAuditedEntity<object>.DeleterUser),
-            nameof(FullAuditedEntity<object>.DeleterUserId),
-            nameof(User.PasswordHash),
-            nameof(User.SecurityStamp)
-        ];
+        public static List<TrackableEntity> GetTrackableEntityList()
+        {
+            var userIgnoredProperties = new List<string>
+            {
+                nameof(User.PasswordHash),
+                nameof(User.SecurityStamp)
+            };
+            userIgnoredProperties.AddRange(FullAuditedEntityIgnoredProperties);
+            return new List<TrackableEntity>
+            {
+                new()
+                {
+                    EntityType = typeof(User),
+                    IgnoredProperties = userIgnoredProperties
+                }
+            };
+        }
     }
 }

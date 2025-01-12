@@ -78,7 +78,8 @@ namespace DND.Storage
             var entityHistoryRecordEntries = new List<EntityHistoryRecordEntry>();
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (!EntityConfiguration.TrackableList.Contains(entry.Entity.GetType()))
+                var trackableEntity = EntityConfiguration.GetTrackableEntityList().FirstOrDefault(x => x.EntityType == entry.Entity.GetType());
+                if (trackableEntity == null)
                 {
                     continue;
                 }
@@ -88,7 +89,7 @@ namespace DND.Storage
                     continue;
                 }
 
-                var includedPropertyEntries = entry.Properties.Where(pe => !EntityConfiguration.IgnoredProperties.Contains(pe.Metadata.Name)).ToList();
+                var includedPropertyEntries = entry.Properties.Where(pe => !trackableEntity.IgnoredProperties.Contains(pe.Metadata.Name)).ToList();
                 if (!includedPropertyEntries.Any(pe => pe.IsModified))
                 {
                     continue;

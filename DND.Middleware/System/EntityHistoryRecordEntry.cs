@@ -18,9 +18,13 @@ namespace DND.Middleware.System
 
         public EntityHistoryRecord ToEntityHistoryRecord()
         {
-            foreach (var property in EntityConfiguration.IgnoredProperties)
+            var trackableEntity = EntityConfiguration.GetTrackableEntityList().FirstOrDefault(te => te.EntityType.Name == EntityName);
+            if (trackableEntity != null)
             {
-                Values.Remove(property);
+                foreach (var property in trackableEntity.IgnoredProperties)
+                {
+                    Values.Remove(property);
+                }
             }
 
             return new EntityHistoryRecord
