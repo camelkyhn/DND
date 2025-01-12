@@ -1,5 +1,4 @@
 ﻿using DND.Middleware.Exceptions;
-using DND.Storage;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System;
@@ -13,9 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Collections.Generic;
-using AutoMapper;
 using DND.Middleware.Dtos.Identity.Accounts;
-using DND.Middleware.Identity;
 using DND.Middleware.System.Options;
 
 namespace DND.Business.Services.Identity
@@ -29,7 +26,7 @@ namespace DND.Business.Services.Identity
     {
         private readonly AuthorizationOptions _authorizationOptions;
 
-        public AccountService(IMapper mapper, IAppSession appSession, IRepositoryContext repositoryContext, IOptions<AuthorizationOptions> options) : base(mapper, appSession, repositoryContext)
+        public AccountService(IServiceProvider serviceProvider, IOptions<AuthorizationOptions> options) : base(serviceProvider)
         {
             _authorizationOptions = options.Value;
         }

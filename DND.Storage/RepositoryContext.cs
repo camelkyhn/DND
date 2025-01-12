@@ -3,9 +3,20 @@ using DND.Middleware.Identity;
 using DND.Storage.IRepositories.Identity;
 using DND.Storage.Repositories.Identity;
 using System;
+using DND.Middleware.Attributes;
 
 namespace DND.Storage
 {
+    public interface IRepositoryContext : IDisposable
+    {
+        public IPermissionRepository Permissions { get; }
+        public IRoleRepository Roles { get; }
+        public IRolePermissionRepository RolePermissions { get; }
+        public IUserRepository Users { get; }
+        public IUserRoleRepository UserRoles { get; }
+    }
+
+    [ScopedDependency]
     public class RepositoryContext : IRepositoryContext
     {
         private readonly DatabaseContext _databaseContext;

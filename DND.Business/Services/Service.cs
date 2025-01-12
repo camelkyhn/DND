@@ -1,25 +1,27 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using DND.Middleware.Identity;
 using DND.Middleware.System;
 using DND.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace DND.Business.Services
 {
-    public class Service
+    public abstract class Service
     {
         protected readonly IMapper Mapper;
         protected readonly IAppSession AppSession;
         protected readonly IRepositoryContext RepositoryContext;
 
-        public Service(IMapper mapper, IAppSession appSession, IRepositoryContext repositoryContext)
+        public Service(IServiceProvider serviceProvider)
         {
-            Mapper = mapper;
-            AppSession = appSession;
-            RepositoryContext = repositoryContext;
+            Mapper = serviceProvider.GetService<IMapper>();
+            AppSession = serviceProvider.GetService<IAppSession>();
+            RepositoryContext = serviceProvider.GetService<IRepositoryContext>();
         }
 
         public InputModelStateDictionary GetInputModelStateDictionary(object input)

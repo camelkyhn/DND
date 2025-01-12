@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
+using DND.Middleware.Attributes;
 using DND.Middleware.Base.Dto;
 using DND.Middleware.Dtos.Identity.Users;
 using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
-using DND.Middleware.Identity;
 using DND.Middleware.System;
-using DND.Storage;
 using Microsoft.AspNetCore.Identity;
 
 namespace DND.Business.Services.Identity
@@ -23,9 +21,10 @@ namespace DND.Business.Services.Identity
         Task<Result<UserDto>> CreateOrUpdateAsync(CreateOrUpdateUserDto dto, CancellationToken cancellationToken = default);
     }
 
+    [ScopedDependency]
     public class UserService : Service, IUserService
     {
-        public UserService(IMapper mapper, IAppSession appSession, IRepositoryContext repositoryContext) : base(mapper, appSession, repositoryContext)
+        public UserService(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 
@@ -110,7 +109,7 @@ namespace DND.Business.Services.Identity
                         },
                         IsCreatedByCurrentUser = e.CreatorUserId == AppSession.UserId.GetValueOrDefault()
                     }, cancellationToken);
-                    result.Success(entities);
+                    result.Success(entities, new Pagination { PageNumber = filterDto.PageNumber, PageSize = filterDto.PageSize, TotalCount = filterDto.TotalCount });
                 }
             }
             catch (Exception exception)

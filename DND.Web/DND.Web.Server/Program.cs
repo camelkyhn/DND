@@ -1,10 +1,12 @@
-using AutoMapper;
+using DND.Business;
+using DND.Middleware;
 using DND.Middleware.Extensions;
 using DND.Middleware.Identity;
 using DND.Middleware.System;
 using DND.Middleware.System.Options;
 using DND.Storage;
 using DND.Storage.Initializers;
+using DND.Web.Server.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -13,8 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
-using DND.Business.Services.Identity;
 
 namespace DND.Web.Server
 {
@@ -71,14 +73,11 @@ namespace DND.Web.Server
                 return session;
             });
 
-            builder.Services.AddScoped<IRepositoryContext>(options =>
-            {
-                var dbContext = options.GetRequiredService<DatabaseContext>();
-                var mapper = options.GetRequiredService<IMapper>();
-                var session = options.GetRequiredService<IAppSession>();
-                return new RepositoryContext(dbContext, mapper, session);
-            });
-            builder.Services.AddScoped<IUserService, UserService>();
+            //Register services dynamically
+            builder.Services.RegisterServicesWithAttributes(Assembly.GetAssembly(typeof(MiddlewareAssemblyReference)));
+            builder.Services.RegisterServicesWithAttributes(Assembly.GetAssembly(typeof(StorageAssemblyReference)));
+            builder.Services.RegisterServicesWithAttributes(Assembly.GetAssembly(typeof(BusinessAssemblyReference)));
+            builder.Services.RegisterServicesWithAttributes(Assembly.GetAssembly(typeof(WebAssemblyReference)));
 
             var app = builder.Build();
 

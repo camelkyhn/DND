@@ -1,6 +1,4 @@
-﻿using DND.Middleware.Base.Entity;
-
-namespace DND.Middleware.Base.Dto
+﻿namespace DND.Middleware.Base.Dto
 {
     public class EntityDto<TKey> : IdentifiedDto<TKey>, IEntityDto<TKey>
     {
