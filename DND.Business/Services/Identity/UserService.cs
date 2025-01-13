@@ -8,7 +8,9 @@ using DND.Middleware.Dtos.Identity.Users;
 using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
 using DND.Middleware.System;
+using DND.Storage.Repositories.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DND.Business.Services.Identity
 {
@@ -19,13 +21,18 @@ namespace DND.Business.Services.Identity
         Task<Result<List<GetUserForViewDto>>> GetListAsync(UserFilterDto filterDto, CancellationToken cancellationToken = default);
 
         Task<Result<UserDto>> CreateOrUpdateAsync(CreateOrUpdateUserDto dto, CancellationToken cancellationToken = default);
+
+        Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 
     [ScopedDependency]
     public class UserService : Service, IUserService
     {
-        public UserService(IServiceProvider serviceProvider) : base(serviceProvider)
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IServiceProvider serviceProvider, IUserRepository userRepository) : base(serviceProvider)
         {
+            _userRepository = userRepository;
         }
 
         public async Task<Result<GetUserForViewDto>> GetUserForViewAsync(int id, CancellationToken cancellationToken = default)
@@ -33,7 +40,7 @@ namespace DND.Business.Services.Identity
             var result = new Result<GetUserForViewDto>();
             try
             {
-                var entity = await RepositoryContext.Users.GetAsSelectedAsync(id, e => new GetUserForViewDto
+                var entity = await _userRepository.GetAsSelectedAsync(id, e => new GetUserForViewDto
                 {
                     User = Mapper.Map<UserDto>(e),
                     Creator = new EntityAuditorForViewDto
@@ -75,14 +82,13 @@ namespace DND.Business.Services.Identity
             var result = new Result<List<GetUserForViewDto>>();
             try
             {
-                var inputModelStateDictionary = GetInputModelStateDictionary(filterDto);
-                if (!inputModelStateDictionary.IsValid())
+                if (!ModelState.IsValid)
                 {
-                    result.Error(inputModelStateDictionary);
+                    result.Error(ModelState);
                 }
                 else
                 {
-                    var entities = await RepositoryContext.Users.GetListAsSelectedAsync(filterDto, e => new GetUserForViewDto
+                    var entities = await _userRepository.GetListAsSelectedAsync(filterDto, e => new GetUserForViewDto
                     {
                         User = Mapper.Map<UserDto>(e),
                         Creator = new EntityAuditorForViewDto
@@ -109,7 +115,7 @@ namespace DND.Business.Services.Identity
                         },
                         IsCreatedByCurrentUser = e.CreatorUserId == AppSession.UserId.GetValueOrDefault()
                     }, cancellationToken);
-                    result.Success(entities, new Pagination { PageNumber = filterDto.PageNumber, PageSize = filterDto.PageSize, TotalCount = filterDto.TotalCount });
+                    result.Success(entities);
                 }
             }
             catch (Exception exception)
@@ -125,10 +131,9 @@ namespace DND.Business.Services.Identity
             var result = new Result<UserDto>();
             try
             {
-                var inputModelStateDictionary = GetInputModelStateDictionary(dto);
-                if (!inputModelStateDictionary.IsValid())
+                if (!ModelState.IsValid)
                 {
-                    result.Error(inputModelStateDictionary);
+                    result.Error(ModelState);
                 }
                 else
                 {
@@ -158,14 +163,30 @@ namespace DND.Business.Services.Identity
             var entity = Mapper.Map<User>(dto);
             entity.PasswordHash = new PasswordHasher<User>().HashPassword(entity, dto.Password);
             entity.SecurityStamp = Guid.NewGuid().ToString();
-            var newEntity = await RepositoryContext.Users.CreateAsync(entity, cancellationToken);
+            var newEntity = await _userRepository.CreateAsync(entity, cancellationToken);
             return Mapper.Map<UserDto>(newEntity);
         }
 
         private async Task<UserDto> UpdateAsync(CreateOrUpdateUserDto dto, CancellationToken cancellationToken = default)
         {
-            var entity = await RepositoryContext.Users.UpdateAsync(dto, cancellationToken);
+            var entity = await _userRepository.UpdateAsync(dto, cancellationToken);
             return Mapper.Map<UserDto>(entity);
+        }
+
+        public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var result = new Result<UserDto>();
+            try
+            {
+                await _userRepository.DeleteAsync(id, cancellationToken);
+                result.Success();
+            }
+            catch (Exception exception)
+            {
+                result.Error(exception);
+            }
+
+            return result;
         }
     }
 }

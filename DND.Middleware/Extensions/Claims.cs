@@ -6,7 +6,7 @@ namespace DND.Middleware.Extensions
     {
         public static int? GetUserId(this ClaimsPrincipal principal)
         {
-            return !string.IsNullOrEmpty(principal?.FindFirstValue(ClaimTypes.NameIdentifier)) ? int.Parse(principal.FindFirstValue(ClaimTypes.NameIdentifier)) : null;
+            return !string.IsNullOrEmpty(principal?.FindFirstValue(Constants.Claims.Id)) ? int.Parse(principal.FindFirstValue(Constants.Claims.Id)) : null;
         }
 
         public static string GetUserEmail(this ClaimsPrincipal principal)

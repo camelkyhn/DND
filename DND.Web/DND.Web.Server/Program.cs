@@ -1,7 +1,6 @@
 using DND.Business;
 using DND.Middleware;
 using DND.Middleware.Extensions;
-using DND.Middleware.Identity;
 using DND.Middleware.System;
 using DND.Middleware.System.Options;
 using DND.Storage;
@@ -9,7 +8,6 @@ using DND.Storage.Initializers;
 using DND.Web.Server.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +15,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using DND.Middleware.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DND.Web.Server
 {
@@ -33,7 +35,8 @@ namespace DND.Web.Server
             builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.Smtp));
 
             builder.Services.AddControllers();
-            builder.Services.AddHttpContextAccessor();
+            builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -62,15 +65,14 @@ namespace DND.Web.Server
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 
-            builder.Services.AddScoped<IAppSession>(options =>
+            builder.Services.AddScoped(options =>
             {
                 var httpContextAccessor = options.GetRequiredService<IHttpContextAccessor>();
-                var session = new AppSession
+                return new AppSession
                 {
-                    UserId = httpContextAccessor.HttpContext?.User.GetUserId(),
-                    UserEmail = httpContextAccessor.HttpContext?.User.GetUserEmail()
+                    UserId = httpContextAccessor?.HttpContext?.User.GetUserId(),
+                    UserEmail = httpContextAccessor?.HttpContext?.User.GetUserEmail()
                 };
-                return session;
             });
 
             //Register services dynamically

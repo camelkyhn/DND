@@ -1,19 +1,27 @@
 ﻿using AutoMapper;
 using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
-using DND.Middleware.Identity;
-using DND.Storage.IRepositories.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DND.Middleware.Attributes;
 using DND.Middleware.Dtos.Identity.RolePermissions;
+using DND.Middleware.Web;
 
 namespace DND.Storage.Repositories.Identity
 {
+    public interface IRolePermissionRepository : IRepository<int, RolePermission, RolePermissionFilterDto>
+    {
+        bool IsExistingToAdd(CreateOrUpdateRolePermissionDto dto);
+        bool IsExistingToUpdate(CreateOrUpdateRolePermissionDto dto);
+        Task<List<string>> GetRolePermissionListAsync(List<short> roleIdList);
+    }
+
+    [ScopedDependency]
     public class RolePermissionRepository : Repository<DatabaseContext, int, RolePermission, RolePermissionFilterDto>, IRolePermissionRepository
     {
-        public RolePermissionRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
+        public RolePermissionRepository(DatabaseContext context, AppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -43,19 +51,19 @@ namespace DND.Storage.Repositories.Identity
             return queryableSet;
         }
 
-        public bool IsExistingToAdd(RolePermissionDto dto)
+        public bool IsExistingToAdd(CreateOrUpdateRolePermissionDto dto)
         {
             return Context.RolePermissions.Any(rp => rp.PermissionId == dto.PermissionId && rp.RoleId == dto.RoleId);
         }
 
-        public bool IsExistingToUpdate(RolePermissionDto dto)
+        public bool IsExistingToUpdate(CreateOrUpdateRolePermissionDto dto)
         {
             return Context.RolePermissions.Any(rp => rp.Id != dto.Id && rp.PermissionId == dto.PermissionId && rp.RoleId == dto.RoleId);
         }
 
-        public async Task<List<short>> GetRolePermissionIdListAsync(short roleId)
+        public async Task<List<string>> GetRolePermissionListAsync(List<short> roleIdList)
         {
-            return await Context.RolePermissions.Where(rp => rp.RoleId == roleId).Select(rp => rp.PermissionId).ToListAsync();
+            return await Context.RolePermissions.Where(rp => roleIdList.Contains(rp.RoleId)).Select(rp => rp.Permission.Name).Distinct().ToListAsync();
         }
     }
 }

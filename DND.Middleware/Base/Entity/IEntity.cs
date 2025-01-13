@@ -1,7 +1,7 @@
 ﻿namespace DND.Middleware.Base.Entity
 {
-    public interface IEntity<TKey> : IIdentified<TKey>
+    public interface IEntity<TKey>
     {
-        bool IsDeleted { get; set; }
+        TKey Id { get; set; }
     }
 }

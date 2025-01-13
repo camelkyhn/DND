@@ -1,8 +1,9 @@
-﻿namespace DND.Middleware.Base.Dto;
-
-public class BaseViewDto
+﻿namespace DND.Middleware.Base.Dto
 {
-    public EntityAuditorForViewDto Creator { get; set; }
-    public EntityAuditorForViewDto LastModifier { get; set; }
-    public bool IsCreatedByCurrentUser { get; set; }
+    public class BaseViewDto
+    {
+        public EntityAuditorForViewDto Creator { get; set; }
+        public EntityAuditorForViewDto LastModifier { get; set; }
+        public bool IsCreatedByCurrentUser { get; set; }
+    }
 }

@@ -5,6 +5,7 @@ namespace DND.Middleware.Base.Entity
 {
     public class FullAuditedEntity<TKey> : AuditedEntity<TKey>, IFullAuditedEntity
     {
+        public bool IsDeleted { get; set; }
         public int? DeleterUserId { get; set; }
         public DateTime? DeletionTime { get; set; }
 

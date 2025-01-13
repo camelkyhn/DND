@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace DND.Middleware.System;
-
-public class TrackableEntity
+namespace DND.Middleware.System
 {
-    public Type EntityType { get; set; }
-    public List<string> IgnoredProperties { get; set; }
+    public class TrackableEntity
+    {
+        public Type EntityType { get; set; }
+        public List<string> IgnoredProperties { get; set; }
+    }
 }

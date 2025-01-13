@@ -2,6 +2,8 @@
 {
     public class Errors
     {
+        public const string UnauthorizedRequest = "User did not log in the application!";
+        public const string ForbiddenRequest = "User does not have permission to perform this action!";
         public const string AccountLockedOut = "This account locked out, will be released at: ";
         public const string AlreadyConfirmedEmail = "This email address is already confirmed!";
         public const string ConfirmNewPassword = "New Password and Confirmation Password do not match!";

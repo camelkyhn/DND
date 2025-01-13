@@ -7,7 +7,7 @@ using DND.Middleware.Base.Entity;
 namespace DND.Middleware.Entities.System
 {
     [Table(nameof(EntityHistoryRecord))]
-    public class EntityHistoryRecord : Identified<long>
+    public class EntityHistoryRecord : Entity<long>
     {
         [Required]
         [StringLength(MaxLengths.ShortText, MinimumLength = MinLengths.ShortText)]

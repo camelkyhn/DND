@@ -1,19 +1,38 @@
 ﻿using DND.Middleware.Exceptions;
-using DND.Storage.IRepositories.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
 using AutoMapper;
+using DND.Middleware.Attributes;
+using DND.Middleware.Dtos.Identity.Accounts;
+using DND.Middleware.Web;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DND.Middleware.Identity;
 
 namespace DND.Storage.Repositories.Identity
 {
+    public interface IUserRepository : IRepository<int, User, UserFilterDto>
+    {
+        /// <summary>
+        /// Get the <see cref="User"/> entity by searching the email.
+        /// </summary>
+        /// <param name="email">A string value to search</param>
+        /// <returns>Returns the <see cref="User"/> by searching email.</returns>
+        /// <exception cref="NotFoundException">If the search result is null.</exception>
+        Task<User> GetByEmailAsync(string email);
+        Task IncreaseFailedAttemptsAsync(User user);
+        Task ClearFailedAttemptsAsync(User user);
+        bool IsEmailTaken(string email);
+        bool IsEmailTaken(string email, int userId);
+        Task<User> RegisterAsync(RegisterDto dto);
+    }
+
+    [ScopedDependency]
     public class UserRepository : Repository<DatabaseContext, int, User, UserFilterDto>, IUserRepository
     {
-        public UserRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
+        public UserRepository(DatabaseContext context, AppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -43,7 +62,7 @@ namespace DND.Storage.Repositories.Identity
             var user = await Context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
             if (user == null)
             {
-                throw new NotFoundException(nameof(User));
+                throw new NotFoundException($"{nameof(User)} is not found with email '{email}'.");
             }
 
             return user;
@@ -69,9 +88,6 @@ namespace DND.Storage.Repositories.Identity
             user.LastModificationTime = DateTime.UtcNow;
             user.AccessFailedCount = 0;
             user.LockoutEnd = null;
-            Context.Entry(user).Property(u => u.LastModificationTime).IsModified = true;
-            Context.Entry(user).Property(u => u.AccessFailedCount).IsModified = true;
-            Context.Entry(user).Property(u => u.LockoutEnd).IsModified = true;
             await Context.SaveChangesAsync();
         }
 
@@ -83,6 +99,23 @@ namespace DND.Storage.Repositories.Identity
         public bool IsEmailTaken(string email, int userId)
         {
             return Context.Users.Any(u => u.Id != userId && u.Email.ToLower() == email.ToLower());
+        }
+
+        public async Task<User> RegisterAsync(RegisterDto dto)
+        {
+            var user = new User
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                UserName = dto.UserName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                IsLockoutEnabled = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, dto.Password);
+            return await CreateAsync(user);
         }
     }
 }

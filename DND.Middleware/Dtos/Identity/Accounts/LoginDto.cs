@@ -7,6 +7,7 @@ namespace DND.Middleware.Dtos.Identity.Accounts
     {
         [Required]
         [StringLength(MaxLengths.LongText, MinimumLength = MinLengths.LongText)]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]

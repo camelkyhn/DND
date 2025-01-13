@@ -15,6 +15,7 @@ namespace DND.Middleware.Dtos.Identity.Accounts
 
         [Required]
         [StringLength(MaxLengths.PasswordText, MinimumLength = MinLengths.PasswordText)]
+        [Compare(nameof(NewPassword), ErrorMessage = Errors.ConfirmNewPassword)]
         public string ConfirmPassword { get; set; }
     }
 }

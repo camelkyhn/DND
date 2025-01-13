@@ -2,7 +2,7 @@
 
 namespace DND.Web.Server.Controllers
 {
-    public class BaseController : Controller
+    public class AppController : ControllerBase
     {
     }
 }

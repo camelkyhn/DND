@@ -11,7 +11,7 @@ namespace DND.Web.Server.Controllers.Identity
 {
     [Area(Areas.Identity)]
     [Route("[area]/[controller]/[action]")]
-    public class UserController : BaseController
+    public class UserController : AppController
     {
         private readonly IUserService _userService;
 
@@ -33,9 +33,15 @@ namespace DND.Web.Server.Controllers.Identity
         }
 
         [HttpPost]
-        public async Task<Result<UserDto>> CreateOrUpdate(CreateOrUpdateUserDto dto)
+        public async Task<Result<UserDto>> CreateOrUpdate([FromBody] CreateOrUpdateUserDto dto)
         {
             return await _userService.CreateOrUpdateAsync(dto);
+        }
+
+        [HttpGet]
+        public async Task<Result> Delete(int id)
+        {
+            return await _userService.DeleteAsync(id);
         }
     }
 }

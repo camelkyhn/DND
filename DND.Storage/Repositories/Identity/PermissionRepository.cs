@@ -1,15 +1,20 @@
 ﻿using AutoMapper;
 using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
-using DND.Middleware.Identity;
-using DND.Storage.IRepositories.Identity;
 using System.Linq;
+using DND.Middleware.Attributes;
+using DND.Middleware.Web;
 
 namespace DND.Storage.Repositories.Identity
 {
+    public interface IPermissionRepository : IRepository<short, Permission, PermissionFilterDto>
+    {
+    }
+
+    [ScopedDependency]
     public class PermissionRepository : Repository<DatabaseContext, short, Permission, PermissionFilterDto>, IPermissionRepository
     {
-        public PermissionRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
+        public PermissionRepository(DatabaseContext context, AppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 

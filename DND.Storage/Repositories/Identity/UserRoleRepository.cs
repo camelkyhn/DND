@@ -1,19 +1,27 @@
 ﻿using DND.Middleware.Entities.Identity;
 using DND.Middleware.FilterDtos.Identity;
-using DND.Middleware.Identity;
-using DND.Storage.IRepositories.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DND.Middleware.Attributes;
 using DND.Middleware.Dtos.Identity.UserRoles;
+using DND.Middleware.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace DND.Storage.Repositories.Identity
 {
+    public interface IUserRoleRepository : IRepository<long, UserRole, UserRoleFilterDto>
+    {
+        bool IsExistingToAdd(CreateOrUpdateUserRoleDto dto);
+        bool IsExistingToUpdate(CreateOrUpdateUserRoleDto dto);
+        Task<List<short>> GetUserRoleIdListAsync(int userId);
+    }
+
+    [ScopedDependency]
     public class UserRoleRepository : Repository<DatabaseContext, long, UserRole, UserRoleFilterDto>, IUserRoleRepository
     {
-        public UserRoleRepository(DatabaseContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
+        public UserRoleRepository(DatabaseContext context, AppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -38,19 +46,19 @@ namespace DND.Storage.Repositories.Identity
             return queryableSet;
         }
 
-        public bool IsExistingToAdd(UserRoleDto dto)
+        public bool IsExistingToAdd(CreateOrUpdateUserRoleDto dto)
         {
             return Context.UserRoles.Any(ur => ur.UserId == dto.UserId && ur.RoleId == dto.RoleId);
         }
 
-        public bool IsExistingToUpdate(UserRoleDto dto)
+        public bool IsExistingToUpdate(CreateOrUpdateUserRoleDto dto)
         {
             return Context.UserRoles.Any(ur => ur.Id != dto.Id && ur.UserId == dto.UserId && ur.RoleId == dto.RoleId);
         }
 
         public async Task<List<short>> GetUserRoleIdListAsync(int userId)
         {
-            return await Context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.RoleId).ToListAsync();
+            return await Context.UserRoles.Where(ur => ur.UserId == userId).Select(ur => ur.RoleId).Distinct().ToListAsync();
         }
     }
 }

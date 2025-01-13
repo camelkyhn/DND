@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace DND.Middleware.System
 {
@@ -8,7 +10,12 @@ namespace DND.Middleware.System
         public string ErrorMessage { get; set; }
         public string ExceptionType { get; set; }
         public string ExceptionMessage { get; set; }
-        public InputModelStateDictionary InputModelStateDictionary { get; set; }
+        public ObjectModelStateDictionary RequestModelState { get; set; } = new();
+
+        public void Success()
+        {
+            IsSucceeded = true;
+        }
 
         public Result Error(string errorMessage)
         {
@@ -25,10 +32,14 @@ namespace DND.Middleware.System
             return this;
         }
 
-        public Result Error(InputModelStateDictionary inputModelStateDictionary)
+        public Result Error(ModelStateDictionary modelState)
         {
             IsSucceeded = false;
-            InputModelStateDictionary = inputModelStateDictionary;
+            foreach (var state in modelState)
+            {
+                RequestModelState[state.Key] = state.Value.Errors.Select(e => e.ErrorMessage).ToList();
+            }
+
             return this;
         }
     }
@@ -36,7 +47,6 @@ namespace DND.Middleware.System
     public class Result<T> : Result
     {
         public T Data { get; set; }
-        public Pagination Pagination { get; set; }
 
         public void Success(T data)
         {
@@ -44,11 +54,30 @@ namespace DND.Middleware.System
             Data = data;
         }
 
-        public void Success(T data, Pagination paginationInfo)
+        public new Result<T> Error(string errorMessage)
         {
-            IsSucceeded = true;
-            Data = data;
-            Pagination = paginationInfo;
+            IsSucceeded = false;
+            ErrorMessage = errorMessage;
+            return this;
+        }
+
+        public new Result<T> Error(Exception exception)
+        {
+            IsSucceeded = false;
+            ExceptionMessage = exception.Message;
+            ExceptionType = exception.GetType().Name;
+            return this;
+        }
+
+        public new Result<T> Error(ModelStateDictionary modelState)
+        {
+            IsSucceeded = false;
+            foreach (var state in modelState)
+            {
+                RequestModelState[state.Key] = state.Value.Errors.Select(e => e.ErrorMessage).ToList();
+            }
+
+            return this;
         }
     }
 }

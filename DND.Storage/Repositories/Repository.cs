@@ -1,5 +1,4 @@
-﻿using DND.Storage.IRepositories;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,22 +11,76 @@ using AutoMapper;
 using DND.Middleware.Base.Dto;
 using DND.Middleware.Base.Filter;
 using DND.Middleware.Base.Entity;
-using DND.Middleware.Identity;
 using DND.Middleware.Extensions;
+using DND.Middleware.Web;
 
 namespace DND.Storage.Repositories
 {
-    public class Repository<TContext, TKey, TEntity> : IRepository<TKey, TEntity>
+    public interface IRepository<TKey, TEntity> : IDisposable where TKey : struct, IEquatable<TKey> where TEntity : class, IEntity<TKey>
+    {
+        IQueryable<TEntity> GetTableAsQueryable();
+
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get the <see cref="TEntity"/> entity by id.
+        /// </summary>
+        /// <param name="id">The primary key of the table.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task.</param>
+        /// <returns>Returns the <see cref="TEntity"/> by id.</returns>
+        /// <exception cref="NotFoundException">If the search result is null.</exception>
+        Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get the <see cref="TEntity"/> entity by id.
+        /// </summary>
+        /// <param name="id">The primary key of the table.</param>
+        /// <param name="selectExpression">A projection function to apply to each.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task.</param>
+        /// <returns>Returns the <see cref="TEntity"/> by id.</returns>
+        /// <exception cref="NotFoundException">If the search result is null.</exception>
+        Task<TEntity> GetAsSelectedAsync(TKey id, Expression<Func<TEntity, TEntity>> selectExpression, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get the <see cref="TEntity"/> entity by id.
+        /// </summary>
+        /// <param name="id">The primary key of the table.</param>
+        /// <param name="selectExpression">A projection function to apply to each.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task.</param>
+        /// <returns>Returns the <see cref="TEntity"/> by id.</returns>
+        /// <exception cref="NotFoundException">If the search result is null.</exception>
+        Task<TResult> GetAsSelectedAsync<TResult>(TKey id, Expression<Func<TEntity, TResult>> selectExpression, CancellationToken cancellationToken = default);
+
+        Task<TEntity> CreateAsync<TEntityDto>(TEntityDto dto, CancellationToken cancellationToken = default) where TEntityDto : class, IEntityDto<TKey?>;
+
+        Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+        Task<TEntity> UpdateAsync<TEntityDto>(TEntityDto dto, CancellationToken cancellationToken = default) where TEntityDto : class, IEntityDto<TKey?>;
+
+        Task<TEntity> UpdateAsync(TEntity updatedEntity, CancellationToken cancellationToken = default);
+
+        Task DeleteAsync(TKey id, CancellationToken cancellationToken = default);
+
+        Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+
+        Task CreateSavepointAsync(IDbContextTransaction transaction, string pointName, CancellationToken cancellationToken = default);
+
+        Task RollbackToSavepointAsync(IDbContextTransaction transaction, string pointName, CancellationToken cancellationToken = default);
+
+        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+    }
+
+    public abstract class Repository<TContext, TKey, TEntity> : IRepository<TKey, TEntity>
         where TContext : DbContext
         where TKey : struct, IEquatable<TKey>
         where TEntity : class, IEntity<TKey>
     {
         protected readonly TContext Context;
-        protected readonly IAppSession Session;
+        protected readonly AppSession Session;
         protected readonly IMapper Mapper;
         protected readonly DbSet<TEntity> Table;
 
-        protected Repository(TContext context, IAppSession session, IMapper mapper)
+        protected Repository(TContext context, AppSession session, IMapper mapper)
         {
             Context = context;
             Session = session;
@@ -37,12 +90,22 @@ namespace DND.Storage.Repositories
 
         public IQueryable<TEntity> GetTableAsQueryable()
         {
-            return Table.Where(x => !x.IsDeleted);
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            {
+                return Table.Where(x => !((IDeletionAuditedEntity)x).IsDeleted);
+            }
+
+            return Table.AsQueryable();
         }
 
         public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await Table.Where(x => !x.IsDeleted).FirstOrDefaultAsync(expression, cancellationToken);
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            {
+                return await Table.Where(x => !((IDeletionAuditedEntity)x).IsDeleted).FirstOrDefaultAsync(expression, cancellationToken);
+            }
+
+            return await Table.FirstOrDefaultAsync(expression, cancellationToken);
         }
 
         public virtual async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default)
@@ -52,7 +115,16 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TEntity> GetAsSelectedAsync(TKey id, Expression<Func<TEntity, TEntity>> selectExpression, CancellationToken cancellationToken = default)
         {
-            var entity = await Table.Where(e => !e.IsDeleted).Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            TEntity entity;
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            {
+                entity = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted).Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            }
+            else
+            {
+                entity = await Table.Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            }
+
             if (entity == null)
             {
                 throw new NotFoundException(typeof(TEntity).Name);
@@ -63,7 +135,16 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TResult> GetAsSelectedAsync<TResult>(TKey id, Expression<Func<TEntity, TResult>> selectExpression, CancellationToken cancellationToken = default)
         {
-            var entityResult = await Table.Where(e => !e.IsDeleted && e.Id.Equals(id)).Select(selectExpression).FirstOrDefaultAsync(cancellationToken);
+            TResult entityResult;
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            {
+                entityResult = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted && e.Id.Equals(id)).Select(selectExpression).FirstOrDefaultAsync(cancellationToken);
+            }
+            else
+            {
+                entityResult = await Table.Where(e => e.Id.Equals(id)).Select(selectExpression).FirstOrDefaultAsync(cancellationToken);
+            }
+
             if (entityResult == null)
             {
                 throw new NotFoundException(typeof(TEntity).Name);
@@ -133,11 +214,15 @@ namespace DND.Storage.Repositories
         {
             var oldEntity = await FindAsync(id, cancellationToken);
             AttachIfNot(oldEntity);
-            oldEntity.IsDeleted = true;
             if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
             {
+                oldEntity.SetPropertyValue(nameof(IDeletionAuditedEntity.IsDeleted), true);
                 oldEntity.SetPropertyValue(nameof(IDeletionAuditedEntity.DeletionTime), DateTime.UtcNow);
                 oldEntity.SetPropertyValue(nameof(IDeletionAuditedEntity.DeleterUserId), Session.UserId);
+            }
+            else
+            {
+                Context.Remove(oldEntity);
             }
 
             await Context.SaveChangesAsync(cancellationToken);
@@ -165,7 +250,16 @@ namespace DND.Storage.Repositories
 
         private async Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            var entity = await Table.Where(e => !e.IsDeleted).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
+            TEntity entity;
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            {
+                entity = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
+            }
+            else
+            {
+                entity = await Table.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            }
+
             if (entity == null)
             {
                 throw new NotFoundException(typeof(TEntity).Name);
@@ -181,16 +275,54 @@ namespace DND.Storage.Repositories
                 Table.Attach(entity);
             }
         }
+
+        #region Dispose
+
+        private bool _isDisposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    Context.Dispose();
+                }
+            }
+
+            _isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 
-    public class Repository<TContext, TKey, TEntity, TFilterDto> : Repository<TContext, TKey, TEntity>, IRepository<TKey, TEntity, TFilterDto>
+    public interface IRepository<TKey, TEntity, in TFilterDto> : IRepository<TKey, TEntity>
+        where TKey : struct, IEquatable<TKey>
+        where TEntity : class, IEntity<TKey>
+        where TFilterDto : FilterDto
+    {
+        Task<List<TEntity>> GetListAsync(TFilterDto filter, CancellationToken cancellationToken = default);
+
+        Task<List<TEntity>> GetListAsSelectedAsync(TFilterDto filter, Expression<Func<TEntity, TEntity>> selectExpression, CancellationToken cancellationToken = default);
+
+        Task<List<TResult>> GetListAsSelectedAsync<TResult>(TFilterDto filter, Expression<Func<TEntity, TResult>> selectExpression, CancellationToken cancellationToken = default);
+
+        IQueryable<TEntity> Filter(IQueryable<TEntity> queryableSet, TFilterDto filter);
+    }
+
+    public abstract class Repository<TContext, TKey, TEntity, TFilterDto> : Repository<TContext, TKey, TEntity>, IRepository<TKey, TEntity, TFilterDto>
         where TContext : DbContext
         where TKey : struct, IEquatable<TKey>
         where TEntity : class, IEntity<TKey>
         where TFilterDto : FilterDto
     {
-
-        protected Repository(TContext context, IAppSession session, IMapper mapper) : base(context, session, mapper)
+        protected Repository(TContext context, AppSession session, IMapper mapper) : base(context, session, mapper)
         {
         }
 
@@ -247,13 +379,16 @@ namespace DND.Storage.Repositories
                 }
             }
 
-            if (filter.IsDeleted != null)
+            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
             {
-                queryableSet = queryableSet.Where(entity => entity.IsDeleted == filter.IsDeleted);
-            }
-            else
-            {
-                queryableSet = queryableSet.Where(entity => !entity.IsDeleted);
+                if (filter.IsDeleted != null)
+                {
+                    queryableSet = queryableSet.Where(entity => ((IDeletionAuditedEntity)entity).IsDeleted == filter.IsDeleted);
+                }
+                else
+                {
+                    queryableSet = queryableSet.Where(entity => !((IDeletionAuditedEntity)entity).IsDeleted);
+                }
             }
 
             if (!string.IsNullOrEmpty(filter.SortBy))
