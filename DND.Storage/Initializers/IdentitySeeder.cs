@@ -97,74 +97,59 @@ namespace DND.Storage.Initializers
 
         private void SeedPermissions()
         {
-            var identityAccountAccessDenied = SeedPermission(Permissions.IdentityAccountAccessDenied);
             var identityAccountChangePassword = SeedPermission(Permissions.IdentityAccountChangePassword);
-            var identityAccountConfirmEmail = SeedPermission(Permissions.IdentityAccountConfirmEmail);
-            var identityAccountLogin = SeedPermission(Permissions.IdentityAccountLogin);
-            var identityAccountLogout = SeedPermission(Permissions.IdentityAccountLogout);
-            var identityAccountResetPassword = SeedPermission(Permissions.IdentityAccountResetPassword);
 
-            var identityUserCreate = SeedPermission(Permissions.IdentityUserCreate);
+            var identityUserGet = SeedPermission(Permissions.IdentityUserGet);
+            var identityUserGetList = SeedPermission(Permissions.IdentityUserGetList);
+            var identityUserCreate = SeedPermission(Permissions.IdentityUserCreateOrUpdate);
             var identityUserDelete = SeedPermission(Permissions.IdentityUserDelete);
-            var identityUserDetail = SeedPermission(Permissions.IdentityUserDetail);
-            var identityUserUpdate = SeedPermission(Permissions.IdentityUserUpdate);
-            var identityUserList = SeedPermission(Permissions.IdentityUserList);
 
-            var identityRoleCreate = SeedPermission(Permissions.IdentityRoleCreate);
+            var identityRoleGet = SeedPermission(Permissions.IdentityRoleGet);
+            var identityRoleGetList = SeedPermission(Permissions.IdentityRoleGetList);
+            var identityRoleCreate = SeedPermission(Permissions.IdentityRoleCreateOrUpdate);
             var identityRoleDelete = SeedPermission(Permissions.IdentityRoleDelete);
-            var identityRoleDetail = SeedPermission(Permissions.IdentityRoleDetail);
-            var identityRoleUpdate = SeedPermission(Permissions.IdentityRoleUpdate);
-            var identityRoleList = SeedPermission(Permissions.IdentityRoleList);
 
-            var identityUserRoleCreate = SeedPermission(Permissions.IdentityUserRoleCreate);
+            var identityUserRoleGet = SeedPermission(Permissions.IdentityUserRoleGet);
+            var identityUserRoleGetList = SeedPermission(Permissions.IdentityUserRoleGetList);
+            var identityUserRoleCreate = SeedPermission(Permissions.IdentityUserRoleCreateOrUpdate);
             var identityUserRoleDelete = SeedPermission(Permissions.IdentityUserRoleDelete);
-            var identityUserRoleDetail = SeedPermission(Permissions.IdentityUserRoleDetail);
-            var identityUserRoleUpdate = SeedPermission(Permissions.IdentityUserRoleUpdate);
-            var identityUserRoleList = SeedPermission(Permissions.IdentityUserRoleList);
 
-            var identityPermissionCreate = SeedPermission(Permissions.IdentityPermissionCreate);
+            var identityPermissionGet = SeedPermission(Permissions.IdentityPermissionGet);
+            var identityPermissionGetList = SeedPermission(Permissions.IdentityPermissionGetList);
+            var identityPermissionCreate = SeedPermission(Permissions.IdentityPermissionCreateOrUpdate);
             var identityPermissionDelete = SeedPermission(Permissions.IdentityPermissionDelete);
-            var identityPermissionDetail = SeedPermission(Permissions.IdentityPermissionDetail);
-            var identityPermissionUpdate = SeedPermission(Permissions.IdentityPermissionUpdate);
-            var identityPermissionList = SeedPermission(Permissions.IdentityPermissionList);
 
-            var identityRolePermissionCreate = SeedPermission(Permissions.IdentityRolePermissionCreate);
+            var identityRolePermissionGet = SeedPermission(Permissions.IdentityRolePermissionGet);
+            var identityRolePermissionGetList = SeedPermission(Permissions.IdentityRolePermissionGetList);
+            var identityRolePermissionCreate = SeedPermission(Permissions.IdentityRolePermissionCreateOrUpdate);
             var identityRolePermissionDelete = SeedPermission(Permissions.IdentityRolePermissionDelete);
-            var identityRolePermissionDetail = SeedPermission(Permissions.IdentityRolePermissionDetail);
-            var identityRolePermissionUpdate = SeedPermission(Permissions.IdentityRolePermissionUpdate);
-            var identityRolePermissionList = SeedPermission(Permissions.IdentityRolePermissionList);
 
             SeedRolePermission(_adminRole.Id, identityAccountChangePassword.Id);
 
             SeedRolePermission(_adminRole.Id, identityUserCreate.Id);
             SeedRolePermission(_adminRole.Id, identityUserDelete.Id);
-            SeedRolePermission(_adminRole.Id, identityUserDetail.Id);
-            SeedRolePermission(_adminRole.Id, identityUserUpdate.Id);
-            SeedRolePermission(_adminRole.Id, identityUserList.Id);
+            SeedRolePermission(_adminRole.Id, identityUserGet.Id);
+            SeedRolePermission(_adminRole.Id, identityUserGetList.Id);
 
             SeedRolePermission(_adminRole.Id, identityRoleCreate.Id);
             SeedRolePermission(_adminRole.Id, identityRoleDelete.Id);
-            SeedRolePermission(_adminRole.Id, identityRoleDetail.Id);
-            SeedRolePermission(_adminRole.Id, identityRoleUpdate.Id);
-            SeedRolePermission(_adminRole.Id, identityRoleList.Id);
+            SeedRolePermission(_adminRole.Id, identityRoleGet.Id);
+            SeedRolePermission(_adminRole.Id, identityRoleGetList.Id);
 
             SeedRolePermission(_adminRole.Id, identityUserRoleCreate.Id);
             SeedRolePermission(_adminRole.Id, identityUserRoleDelete.Id);
-            SeedRolePermission(_adminRole.Id, identityUserRoleDetail.Id);
-            SeedRolePermission(_adminRole.Id, identityUserRoleUpdate.Id);
-            SeedRolePermission(_adminRole.Id, identityUserRoleList.Id);
+            SeedRolePermission(_adminRole.Id, identityUserRoleGet.Id);
+            SeedRolePermission(_adminRole.Id, identityUserRoleGetList.Id);
 
             SeedRolePermission(_adminRole.Id, identityPermissionCreate.Id);
             SeedRolePermission(_adminRole.Id, identityPermissionDelete.Id);
-            SeedRolePermission(_adminRole.Id, identityPermissionDetail.Id);
-            SeedRolePermission(_adminRole.Id, identityPermissionUpdate.Id);
-            SeedRolePermission(_adminRole.Id, identityPermissionList.Id);
+            SeedRolePermission(_adminRole.Id, identityPermissionGet.Id);
+            SeedRolePermission(_adminRole.Id, identityPermissionGetList.Id);
 
             SeedRolePermission(_adminRole.Id, identityRolePermissionCreate.Id);
             SeedRolePermission(_adminRole.Id, identityRolePermissionDelete.Id);
-            SeedRolePermission(_adminRole.Id, identityRolePermissionDetail.Id);
-            SeedRolePermission(_adminRole.Id, identityRolePermissionUpdate.Id);
-            SeedRolePermission(_adminRole.Id, identityRolePermissionList.Id);
+            SeedRolePermission(_adminRole.Id, identityRolePermissionGet.Id);
+            SeedRolePermission(_adminRole.Id, identityRolePermissionGetList.Id);
 
             SeedRolePermission(_memberRole.Id, identityAccountChangePassword.Id);
         }

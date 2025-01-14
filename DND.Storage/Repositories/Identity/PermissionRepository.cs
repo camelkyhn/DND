@@ -25,7 +25,7 @@ namespace DND.Storage.Repositories.Identity
                 queryableSet = queryableSet.Where(p => p.Name.ToLower().Contains(filter.Name.ToLower()));
             }
 
-            queryableSet = Filter(queryableSet, filter);
+            queryableSet = base.Filter(queryableSet, filter);
             return queryableSet;
         }
     }

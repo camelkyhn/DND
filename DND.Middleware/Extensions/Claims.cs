@@ -11,7 +11,7 @@ namespace DND.Middleware.Extensions
 
         public static string GetUserEmail(this ClaimsPrincipal principal)
         {
-            return principal?.FindFirstValue(ClaimTypes.Email);
+            return principal?.FindFirstValue(Constants.Claims.Email);
         }
     }
 }
