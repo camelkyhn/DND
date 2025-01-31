@@ -46,7 +46,7 @@ namespace DND.Web.Server
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Please enter token",
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
@@ -92,6 +92,8 @@ namespace DND.Web.Server
             });
 
             builder.Services.AddDbContext<DatabaseContext>(db => db.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection")));
+
+            builder.Services.AddStackExchangeRedisCache(options => options.Configuration = builder.Configuration.GetConnectionString("CacheConnection"));
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 

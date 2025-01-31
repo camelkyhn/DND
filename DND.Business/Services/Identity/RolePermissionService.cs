@@ -118,7 +118,7 @@ namespace DND.Business.Services.Identity
                         },
                         IsCreatedByCurrentUser = e.CreatorUserId == AppSession.UserId.GetValueOrDefault()
                     }, cancellationToken);
-                    result.Success(entities);
+                    result.Success(entities, filterDto);
                 }
             }
             catch (Exception exception)

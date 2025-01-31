@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DND.Web.Server", "DND.Web\D
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "dnd.web.client", "DND.Web\dnd.web.client\dnd.web.client.esproj", "{7F694B0F-6874-4AC5-B155-236C0AE103F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34DC689B-C430-4BAE-9BAA-FE5F4193A783}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

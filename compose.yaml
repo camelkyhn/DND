@@ -1,0 +1,42 @@
+﻿services:
+  dnd.web.server:
+    image: dnd.web.server
+    container_name: dnd.web.server
+    build:
+      context: .
+      dockerfile: DND.Web/DND.Web.Server/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ASPNETCORE_HTTPS_PORTS=5001
+      - ASPNETCORE_HTTP_PORTS=5000
+      - ConnectionStrings__DatabaseConnection=${ConnectionStrings__DatabaseConnection}
+      - ConnectionStrings__CacheConnection=${ConnectionStrings__CacheConnection}
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      - postgresql
+      - redis
+
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=DND.${ENVIRONMENT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./.containers/dnd-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"

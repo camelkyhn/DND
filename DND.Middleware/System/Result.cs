@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using DND.Middleware.Base.Filter;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace DND.Middleware.System
@@ -47,11 +48,19 @@ namespace DND.Middleware.System
     public class Result<T> : Result
     {
         public T Data { get; set; }
+        public Pagination Pagination { get; set; }
 
         public void Success(T data)
         {
             IsSucceeded = true;
             Data = data;
+        }
+
+        public void Success(T data, FilterDto filterDto)
+        {
+            IsSucceeded = true;
+            Data = data;
+            Pagination = new Pagination { TotalCount = filterDto.TotalCount, PageSize = filterDto.PageSize, PageNumber = filterDto.PageNumber };
         }
 
         public new Result<T> Error(string errorMessage)

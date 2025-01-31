@@ -5,6 +5,7 @@
     <Nullable>disable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <UserSecretsId>5cc020d9-d2d4-4570-b818-9c37729178bd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
