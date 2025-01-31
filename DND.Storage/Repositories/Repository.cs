@@ -90,7 +90,7 @@ namespace DND.Storage.Repositories
 
         public IQueryable<TEntity> GetTableAsQueryable()
         {
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 return Table.Where(x => !((IDeletionAuditedEntity)x).IsDeleted);
             }
@@ -100,7 +100,7 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 return await Table.Where(x => !((IDeletionAuditedEntity)x).IsDeleted).FirstOrDefaultAsync(expression, cancellationToken);
             }
@@ -116,7 +116,7 @@ namespace DND.Storage.Repositories
         public virtual async Task<TEntity> GetAsSelectedAsync(TKey id, Expression<Func<TEntity, TEntity>> selectExpression, CancellationToken cancellationToken = default)
         {
             TEntity entity;
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 entity = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted).Select(selectExpression).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
             }
@@ -136,7 +136,7 @@ namespace DND.Storage.Repositories
         public virtual async Task<TResult> GetAsSelectedAsync<TResult>(TKey id, Expression<Func<TEntity, TResult>> selectExpression, CancellationToken cancellationToken = default)
         {
             TResult entityResult;
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 entityResult = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted && e.Id.Equals(id)).Select(selectExpression).FirstOrDefaultAsync(cancellationToken);
             }
@@ -156,7 +156,7 @@ namespace DND.Storage.Repositories
         public virtual async Task<TEntity> CreateAsync<TEntityDto>(TEntityDto dto, CancellationToken cancellationToken = default) where TEntityDto : class, IEntityDto<TKey?>
         {
             var entity = Mapper.Map<TEntity>(dto);
-            if (typeof(TEntity).IsAssignableFrom(typeof(ICreationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(ICreationAuditedEntity)))
             {
                 entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreationTime), DateTime.UtcNow);
                 entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreatorUserId), Session.UserId);
@@ -169,7 +169,7 @@ namespace DND.Storage.Repositories
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
-            if (typeof(TEntity).IsAssignableFrom(typeof(ICreationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(ICreationAuditedEntity)))
             {
                 entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreationTime), DateTime.UtcNow);
                 entity.SetPropertyValue(nameof(ICreationAuditedEntity.CreatorUserId), Session.UserId);
@@ -185,7 +185,7 @@ namespace DND.Storage.Repositories
             var oldEntity = await FindAsync(dto.Id.GetValueOrDefault(), cancellationToken);
             AttachIfNot(oldEntity);
             oldEntity = Mapper.Map(dto, oldEntity);
-            if (typeof(TEntity).IsAssignableFrom(typeof(IModificationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IModificationAuditedEntity)))
             {
                 oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModificationTime), DateTime.UtcNow);
                 oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModifierUserId), Session.UserId);
@@ -200,7 +200,7 @@ namespace DND.Storage.Repositories
             var oldEntity = await FindAsync(updatedEntity.Id, cancellationToken);
             AttachIfNot(oldEntity);
             oldEntity = Mapper.Map(updatedEntity, oldEntity);
-            if (typeof(TEntity).IsAssignableFrom(typeof(IModificationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IModificationAuditedEntity)))
             {
                 oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModificationTime), DateTime.UtcNow);
                 oldEntity.SetPropertyValue(nameof(IModificationAuditedEntity.LastModifierUserId), Session.UserId);
@@ -214,7 +214,7 @@ namespace DND.Storage.Repositories
         {
             var oldEntity = await FindAsync(id, cancellationToken);
             AttachIfNot(oldEntity);
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 oldEntity.SetPropertyValue(nameof(IDeletionAuditedEntity.IsDeleted), true);
                 oldEntity.SetPropertyValue(nameof(IDeletionAuditedEntity.DeletionTime), DateTime.UtcNow);
@@ -251,7 +251,7 @@ namespace DND.Storage.Repositories
         private async Task<TEntity> FindAsync(TKey id, CancellationToken cancellationToken = default)
         {
             TEntity entity;
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 entity = await Table.Where(e => !((IDeletionAuditedEntity)e).IsDeleted).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken: cancellationToken);
             }
@@ -343,7 +343,7 @@ namespace DND.Storage.Repositories
 
         public virtual IQueryable<TEntity> Filter(IQueryable<TEntity> queryableSet, TFilterDto filter)
         {
-            if (typeof(TEntity).IsAssignableFrom(typeof(ICreationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(ICreationAuditedEntity)))
             {
                 if (filter.CreatedBeforeDate != null && filter.CreatedBeforeDate != DateTime.MinValue)
                 {
@@ -361,7 +361,7 @@ namespace DND.Storage.Repositories
                 }
             }
 
-            if (typeof(TEntity).IsAssignableFrom(typeof(IModificationAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IModificationAuditedEntity)))
             {
                 if (filter.ModifiedBeforeDate != null && filter.ModifiedBeforeDate != DateTime.MinValue)
                 {
@@ -379,7 +379,7 @@ namespace DND.Storage.Repositories
                 }
             }
 
-            if (typeof(TEntity).IsAssignableFrom(typeof(IDeletionAuditedEntity)))
+            if (typeof(TEntity).GetInterfaces().Contains(typeof(IDeletionAuditedEntity)))
             {
                 if (filter.IsDeleted != null)
                 {
